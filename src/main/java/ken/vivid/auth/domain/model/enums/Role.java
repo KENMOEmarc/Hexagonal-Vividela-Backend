@@ -1,4 +1,4 @@
-package ken.vivid.auth.domain.model;
+package ken.vivid.auth.domain.model.enums;
 
 public enum Role {
     ADMIN,

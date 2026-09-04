@@ -1,4 +1,5 @@
 package ken.vivid.auth.application.port.in;
 
-public class LogoutUseCase {
+public interface LogoutUseCase {
+    void logout(String token);
 }

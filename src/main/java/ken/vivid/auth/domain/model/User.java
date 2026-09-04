@@ -1,11 +1,15 @@
 package ken.vivid.auth.domain.model;
 
+import com.fasterxml.jackson.core.JsonToken;
+import ken.vivid.auth.domain.model.enums.Role;
+
 public class User {
     private Long id;
     private Role role;
     private String firstName;
     private String lastName;
     private String userName;
+    private String phone;
     private String email;
     private String password;
     private Integer loyaltyPoints;
@@ -13,25 +17,39 @@ public class User {
 
     public User() {
 
+
     }
-    public User(Role role, String firstName, String lastName, String userName, String email, String password) {
+    public User(Role role, String firstName, String lastName, String userName, String phone, String email, String password) {
         this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
+        this.phone = phone;
         this.email = email;
         this.password = password;
     }
 
-    public User(Role role, String firstName, String lastName, String userName, String email, String password, Integer loyaltyPoints, Boolean isActive) {
+    public User(Role role, String firstName, String lastName, String userName, String phone, String email, String password, Integer loyaltyPoints, Boolean isActive) {
         this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
+        this.phone = phone;
         this.email = email;
         this.password = password;
         this.loyaltyPoints = loyaltyPoints;
         this.isActive = isActive;
+    }
+
+    public User(Long id, String email, String hashedPassword, String firstName, String lastName, String phone, Role role, boolean enabled) {
+        this.id = id;
+        this.email = email;
+        this.password = hashedPassword;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.role = role;
+        this.isActive = enabled;
     }
 
     public Long getId() {
@@ -100,5 +118,9 @@ public class User {
 
     public void setActive(Boolean active) {
         isActive = active;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 }

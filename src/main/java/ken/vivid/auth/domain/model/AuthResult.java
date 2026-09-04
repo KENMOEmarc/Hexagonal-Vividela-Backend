@@ -1,0 +1,10 @@
+package ken.vivid.auth.domain.model;
+
+import ken.vivid.auth.domain.model.enums.Role;
+
+public record AuthResult(String token,
+                         long expiresInMillis,
+                         Long userId,
+                         String email,
+                         Role role) {
+}

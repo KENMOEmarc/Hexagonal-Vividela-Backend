@@ -1,4 +1,7 @@
 package ken.vivid.auth.application.port.in;
 
-public class GetCurrentUserUseCase {
+import ken.vivid.auth.domain.model.User;
+
+public interface GetCurrentUserUseCase {
+    User getCurrentUser(String email);
 }
