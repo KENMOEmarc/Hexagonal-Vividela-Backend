@@ -1,6 +1,5 @@
 package ken.vivid.auth.domain.model;
 
-import com.fasterxml.jackson.core.JsonToken;
 import ken.vivid.auth.domain.model.enums.Role;
 
 public class User {
@@ -126,5 +125,83 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public static class Builder {
+        private Long id;
+        private Role role;
+        private String firstName;
+        private String lastName;
+        private String userName;
+        private String phone;
+        private String email;
+        private String password;
+        private Integer loyaltyPoints;
+        private Boolean isActive;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder role(Role role) {
+            this.role = role;
+            return this;
+        }
+
+        public Builder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public Builder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public Builder userName(String userName) {
+            this.userName = userName;
+            return this;
+        }
+
+        public Builder phone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder loyaltyPoints(Integer loyaltyPoints) {
+            this.loyaltyPoints = loyaltyPoints;
+            return this;
+        }
+
+        public Builder active(Boolean active) {
+            this.isActive = active;
+            return this;
+        }
+
+        public User build() {
+            User user = new User();
+            user.id = this.id;
+            user.role = this.role;
+            user.firstName = this.firstName;
+            user.lastName = this.lastName;
+            user.userName = this.userName;
+            user.phone = this.phone;
+            user.email = this.email;
+            user.password = this.password;
+            user.loyaltyPoints = this.loyaltyPoints;
+            user.isActive = this.isActive;
+            return user;
+        }
     }
 }
