@@ -3,6 +3,7 @@ package ken.vivid.auth.application.service;
 import ken.vivid.auth.application.port.in.ChangePasswordUseCase;
 import ken.vivid.auth.application.port.in.DeleteUserUseCase;
 import ken.vivid.auth.application.port.in.UpdateUserUseCase;
+import ken.vivid.auth.application.port.out.DeleteUserPort;
 import ken.vivid.auth.application.port.out.LoadUserPort;
 import ken.vivid.auth.application.port.out.SaveUserPort;
 import ken.vivid.auth.domain.exception.UserAlreadyExistsException;
@@ -15,9 +16,10 @@ public class UserService implements UpdateUserUseCase, DeleteUserUseCase, Change
     private final SaveUserPort saveUserPort;
     private final DeleteUserPort deleteUserPort;
 
-    public UserService(LoadUserPort loadUserPort, SaveUserPort saveUserPort) {
+    public UserService(LoadUserPort loadUserPort, SaveUserPort saveUserPort, DeleteUserPort deleteUserPort) {
         this.loadUserPort = loadUserPort;
         this.saveUserPort = saveUserPort;
+        this.deleteUserPort = deleteUserPort;
     }
 
     @Override
