@@ -1,6 +1,7 @@
 package ken.vivid.auth.application.port.in;
 
 import ken.vivid.auth.domain.model.User;
+import ken.vivid.auth.domain.model.enums.Role;
 
 public interface RegisterUseCase {
 
@@ -8,11 +9,11 @@ public interface RegisterUseCase {
 
     User store(StoreCommand storeCommand);
 
-    record RegisterCommand(String firstName, String lastName, String userName, String email, String phone, String rawPassword) {
+    record RegisterCommand(String firstName, String lastName, String userName, String email, String phone, String rawPassword, String confirmPassword) {
 
     }
 
-    record StoreCommand(String firstName, String lastName, String userName, String email, String phone, String rawPassword, String confirmPassword){
+    record StoreCommand(String firstName, String lastName, String userName, String email, String phone, String rawPassword, Role role){
 
     }
 }

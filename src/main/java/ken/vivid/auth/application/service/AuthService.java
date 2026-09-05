@@ -56,7 +56,7 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
     @Override
     public User register(RegisterCommand registerCommand) {
 
-        if (!registerCommand.rawPassword().equals(registerCommand.rawPassword())) {
+        if (!registerCommand.rawPassword().equals(registerCommand.confirmPassword())) {
             throw new InvalidCredentialsException("Passwords do not match");
         }
 
@@ -65,13 +65,13 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
         }
 
         User newUser = new User(
-                Role.CUSTOMER,
+                0L,
                 registerCommand.firstName(),
                 registerCommand.lastName(),
                 registerCommand.userName(),
                 registerCommand.email(),
                 passwordEncoderPort.hash(registerCommand.rawPassword()),
-                0,
+                Role.CUSTOMER,
                 true
         );
 
@@ -81,22 +81,18 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
     @Override
     public User store(StoreCommand storeCommand) {
 
-        if (!storeCommand.rawPassword().equals(storeCommand.confirmPassword())) {
-            throw new InvalidCredentialsException("Passwords do not match");
-        }
-
         if (loadUserPort.existsByEmail(storeCommand.email())) {
             throw new UserAlreadyExistsException("An account already exits with this emain : " + storeCommand.email());
         }
 
         User newUser = new User(
-                Role.valueOf(storeCommand.role()),
+                0L,
                 storeCommand.firstName(),
                 storeCommand.lastName(),
                 storeCommand.userName(),
                 storeCommand.email(),
                 passwordEncoderPort.hash(storeCommand.rawPassword()),
-                0,
+                storeCommand.role(),
                 true
         );
 
