@@ -56,7 +56,7 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
     @Override
     public User register(RegisterCommand registerCommand) {
 
-        if (!registerCommand.rawPassword().equals(registerCommand.confirmPassword())) {
+        if (!registerCommand.rawPassword().equals(registerCommand.rawPassword())) {
             throw new InvalidCredentialsException("Passwords do not match");
         }
 
@@ -86,7 +86,7 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
         }
 
         if (loadUserPort.existsByEmail(storeCommand.email())) {
-            throw new UserAlreadyExistsException("Un compte existe déjà avec cet email : " + storeCommand.email());
+            throw new UserAlreadyExistsException("An account already exits with this emain : " + storeCommand.email());
         }
 
         User newUser = new User(
