@@ -15,25 +15,25 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UpdateUserRequest {
 
-    @NotBlank(message = "Le nom d'utilisateur est obligatoire")
-    @Size(min = 3, max = 50, message = "Le nom d'utilisateur doit contenir entre 3 et 50 caractères")
-    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Le nom d'utilisateur ne peut contenir que des lettres, chiffres et underscores")
+    @NotBlank(message = "The username is required")
+    @Size(min = 3, max = 50, message = "The username must contain between 3 and 50 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "The username can only contain letters, numbers and underscores")
     private String userName;
 
-    @NotBlank(message = "L'email est obligatoire")
-    @Email(message = "Format d'email invalide")
-    @Size(max = 150, message = "L'email ne peut pas dépasser 150 caractères")
+    @NotBlank(message = "The email is required")
+    @Email(message = "Invalid email format")
+    @Size(max = 150, message = "The email cannot exceed 150 characters")
     private String email;
 
-    @NotBlank(message = "Le téléphone est obligatoire")
-    @Size(min = 9, max = 20, message = "Le téléphone doit contenir entre 9 et 20 caractères")
+    @NotBlank(message = "The phone number is required")
+    @Size(min = 9, max = 20, message = "The phone number must contain between 9 and 20 characters")
     private String phone;
 
-    @NotBlank(message = "Le prénom est obligatoire")
-    @Size(max = 100, message = "Le prénom ne peut pas dépasser 100 caractères")
+    @NotBlank(message = "The first name is required")
+    @Size(max = 100, message = "The first name cannot exceed 100 characters")
     private String firstName;
 
-    @NotBlank(message = "Le nom est obligatoire")
-    @Size(max = 100, message = "Le nom ne peut pas dépasser 100 caractères")
+    @NotBlank(message = "The last name is required")
+    @Size(max = 100, message = "The last name cannot exceed 100 characters")
     private String lastName;
 }

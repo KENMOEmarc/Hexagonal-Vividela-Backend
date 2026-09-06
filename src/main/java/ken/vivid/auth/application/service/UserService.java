@@ -5,70 +5,84 @@ import ken.vivid.auth.application.port.in.DeleteUserUseCase;
 import ken.vivid.auth.application.port.in.UpdateUserUseCase;
 import ken.vivid.auth.application.port.out.DeleteUserPort;
 import ken.vivid.auth.application.port.out.LoadUserPort;
+import ken.vivid.auth.application.port.out.PasswordEncoderPort;
 import ken.vivid.auth.application.port.out.SaveUserPort;
+import ken.vivid.auth.domain.exception.InvalidCredentialsException;
+import ken.vivid.auth.domain.exception.PasswordMismatchException;
 import ken.vivid.auth.domain.exception.UserAlreadyExistsException;
 import ken.vivid.auth.domain.model.User;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import ken.vivid.auth.domain.model.enums.Role;
+import ken.vivid.shared.domain.exception.InvalidRequestException;
+import ken.vivid.shared.domain.exception.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 
+@RequiredArgsConstructor
 public class UserService implements UpdateUserUseCase, DeleteUserUseCase, ChangePasswordUseCase {
 
     private final LoadUserPort loadUserPort;
     private final SaveUserPort saveUserPort;
     private final DeleteUserPort deleteUserPort;
-
-    public UserService(LoadUserPort loadUserPort, SaveUserPort saveUserPort, DeleteUserPort deleteUserPort) {
-        this.loadUserPort = loadUserPort;
-        this.saveUserPort = saveUserPort;
-        this.deleteUserPort = deleteUserPort;
-    }
+    private final PasswordEncoderPort passwordEncoderPort;
+    private final RoleHierarchyService roleHierarchyService;
 
     @Override
     public User update(UpdateCommand command) {
+        User target = loadUserPort.loadById(command.targetUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable : " + command.targetUserId()));
 
-        User user = loadUserPort.loadById(command.userId())
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "User not found: " + command.userId()
-                        )
-                );
-
-        if (!user.getEmail().equals(command.email())
-                && loadUserPort.loadByEmail(command.email()).isPresent()) {
-
-            throw new UserAlreadyExistsException(
-                    "Email already exists: " + command.email()
-            );
+        boolean isSelfUpdate = command.actingUserId().equals(command.targetUserId());
+        if (!isSelfUpdate && !roleHierarchyService.canModifyUser(command.actingUserRole(), target.getRole())) {
+            throw new AccessDeniedException("Vous n'êtes pas autorisé à modifier cet utilisateur");
         }
 
-        user.setFirstName(command.firstName());
-        user.setLastName(command.lastName());
-        user.setUserName(command.userName());
-        user.setEmail(command.email());
-        user.setPhone(command.phone());
+        if (!target.getEmail().equals(command.email()) && loadUserPort.existsByEmail(command.email())) {
+            throw new UserAlreadyExistsException("Cet email est déjà utilisé : " + command.email());
+        }
+        if (!target.getUserName().equals(command.userName()) && loadUserPort.existsByUserName(command.userName())) {
+            throw new UserAlreadyExistsException("Ce nom d'utilisateur est déjà pris : " + command.userName());
+        }
 
-        return saveUserPort.save(user);
+        target.setFirstName(command.firstName());
+        target.setLastName(command.lastName());
+        target.setUserName(command.userName());
+        target.setEmail(command.email());
+        target.setPhone(command.phone());
+
+        return saveUserPort.save(target);
     }
 
     @Override
     public User changePassword(ChangePasswordCommand command) {
         User user = loadUserPort.loadById(command.userId())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: {} " + command.userId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable : " + command.userId()));
 
-        if (!(user == null)) {
-            user.setPassword(command.newPassword());
-            saveUserPort.save(user);
+        if (!passwordEncoderPort.matches(command.currentPassword(), user.getPassword())) {
+            throw new InvalidCredentialsException("Mot de passe actuel incorrect");
+        }
+        if (!command.newPassword().equals(command.confirmPassword())) {
+            throw new PasswordMismatchException("Les mots de passe ne correspondent pas");
         }
 
-        return user;
+        user.setPassword(passwordEncoderPort.hash(command.newPassword()));
+        return saveUserPort.save(user);
     }
 
     @Override
-    public void delete(Long id) {
-        User user = loadUserPort.loadById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: {} " + id));
+    public void delete(DeleteCommand command) {
+        User target = loadUserPort.loadById(command.targetUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable : " + command.targetUserId()));
 
-        if (!(user == null)) {
-            deleteUserPort.delete(id);
+        if (command.actingUserId().equals(command.targetUserId())) {
+            throw new InvalidRequestException("Vous ne pouvez pas supprimer votre propre compte");
         }
+        if (!roleHierarchyService.canModifyUser(command.actingUserRole(), target.getRole())) {
+            throw new AccessDeniedException("Vous n'êtes pas autorisé à supprimer cet utilisateur");
+        }
+        if (target.getRole() == Role.ADMIN && loadUserPort.countByRole(Role.ADMIN) <= 1) {
+            throw new InvalidRequestException("Impossible de supprimer le dernier compte administrateur");
+        }
+
+        deleteUserPort.delete(command.targetUserId());
     }
 }

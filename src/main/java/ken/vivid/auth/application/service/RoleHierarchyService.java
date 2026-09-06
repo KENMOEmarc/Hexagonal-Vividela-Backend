@@ -1,6 +1,5 @@
 package ken.vivid.auth.application.service;
 
-import com.networknt.schema.keyword.FalseValidator;
 import ken.vivid.auth.domain.model.enums.Role;
 import org.springframework.stereotype.Service;
 

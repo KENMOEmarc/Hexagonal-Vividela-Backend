@@ -29,25 +29,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        extractToken(request).ifPresent(token -> {
-            if (tokenBlacklistPort.isRevoked(token)) {
-                chain2(); // token explicitly disconnected
-                return;
-            }
-            tokenGeneratorPort.validateAndExtractEmail(token).ifPresent(email -> {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                var authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            });
-        });
+        extractToken(request)
+                .filter(token -> !tokenBlacklistPort.isRevoked(token))
+                .flatMap(tokenGeneratorPort::validateAndExtractEmail)
+                .ifPresent(email -> authenticate(email, request));
 
         chain.doFilter(request, response);
     }
 
-    private void chain2() {
-        // no-op : placeholder explicite pour la lisibilité du cas "token révoqué"
+    private void authenticate(String email, HttpServletRequest request) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        var authToken = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 
     private Optional<String> extractToken(HttpServletRequest request) {
@@ -58,4 +53,3 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return Optional.empty();
     }
 }
-

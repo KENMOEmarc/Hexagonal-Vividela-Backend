@@ -7,16 +7,18 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
     public User toDomain(UserJpaEntity entity) {
-        return new User(
-                entity.getId(),
-                entity.getEmail(),
-                entity.getHashedPassword(),
-                entity.getFirstName(),
-                entity.getLastName(),
-                entity.getPhone(),
-                entity.getRole(),
-                entity.isEnabled()
-        );
+        return new User.Builder()
+                .id(entity.getId())
+                .email(entity.getEmail())
+                .password(entity.getHashedPassword())
+                .firstName(entity.getFirstName())
+                .lastName(entity.getLastName())
+                .userName(entity.getUserName())
+                .phone(entity.getPhone())
+                .role(entity.getRole())
+                .loyaltyPoints(entity.getLoyaltyPoints())
+                .active(entity.isEnabled())
+                .build();
     }
 
     public UserJpaEntity toEntity(User user) {
@@ -26,9 +28,11 @@ public class UserMapper {
                 .hashedPassword(user.getPassword())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .userName(user.getUserName())
                 .phone(user.getPhone())
                 .role(user.getRole())
-                .enabled(user.getActive())
+                .loyaltyPoints(user.getLoyaltyPoints() != null ? user.getLoyaltyPoints() : 0)
+                .enabled(Boolean.TRUE.equals(user.getActive()))
                 .build();
     }
 }

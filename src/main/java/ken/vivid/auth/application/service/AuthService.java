@@ -1,6 +1,5 @@
 package ken.vivid.auth.application.service;
 
-import io.modelcontextprotocol.spec.McpSchema;
 import ken.vivid.auth.application.port.in.GetCurrentUserUseCase;
 import ken.vivid.auth.application.port.in.LoginUseCase;
 import ken.vivid.auth.application.port.in.LogoutUseCase;
@@ -12,7 +11,6 @@ import ken.vivid.auth.domain.model.AuthResult;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.auth.domain.model.enums.Role;
 import lombok.RequiredArgsConstructor;
-import org.eclipse.angus.mail.imap.protocol.UIDSet;
 import org.springframework.stereotype.Service;
 
 @Service

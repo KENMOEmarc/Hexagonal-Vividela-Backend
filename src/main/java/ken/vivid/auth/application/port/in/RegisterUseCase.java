@@ -9,11 +9,23 @@ public interface RegisterUseCase {
 
     User store(StoreCommand storeCommand);
 
-    record RegisterCommand(String firstName, String lastName, String userName, String email, String phone, String rawPassword, String confirmPassword) {
+    record RegisterCommand(String firstName,
+                           String lastName,
+                           String userName,
+                           String email,
+                           String phone,
+                           String rawPassword,
+                           String confirmPassword) {
 
     }
 
-    record StoreCommand(String firstName, String lastName, String userName, String email, String phone, String rawPassword, Role role){
+    record StoreCommand(String firstName,
+                        String lastName,
+                        String userName,
+                        String email,
+                        String phone,
+                        String rawPassword,
+                        Role role){
 
     }
 }
