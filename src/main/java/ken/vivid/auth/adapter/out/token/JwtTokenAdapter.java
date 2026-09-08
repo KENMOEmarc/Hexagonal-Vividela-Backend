@@ -1,12 +1,12 @@
 package ken.vivid.auth.adapter.out.token;
 
-import com.google.api.client.util.Value;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import ken.vivid.auth.application.port.out.TokenGeneratorPort;
 import ken.vivid.auth.domain.model.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -22,7 +22,7 @@ public class JwtTokenAdapter implements TokenGeneratorPort {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration-ms}")
+    @Value("${jwt.expiration}")
     private long expirationMillis;
 
     private SecretKey signingKey;

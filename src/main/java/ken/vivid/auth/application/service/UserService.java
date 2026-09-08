@@ -14,10 +14,8 @@ import ken.vivid.auth.domain.model.User;
 import ken.vivid.auth.domain.model.enums.Role;
 import ken.vivid.shared.domain.exception.InvalidRequestException;
 import ken.vivid.shared.domain.exception.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 
-@RequiredArgsConstructor
 public class UserService implements UpdateUserUseCase, DeleteUserUseCase, ChangePasswordUseCase {
 
     private final LoadUserPort loadUserPort;
@@ -25,6 +23,14 @@ public class UserService implements UpdateUserUseCase, DeleteUserUseCase, Change
     private final DeleteUserPort deleteUserPort;
     private final PasswordEncoderPort passwordEncoderPort;
     private final RoleHierarchyService roleHierarchyService;
+
+    public UserService(LoadUserPort loadUserPort, SaveUserPort saveUserPort, DeleteUserPort deleteUserPort, PasswordEncoderPort passwordEncoderPort, RoleHierarchyService roleHierarchyService) {
+        this.loadUserPort = loadUserPort;
+        this.saveUserPort = saveUserPort;
+        this.deleteUserPort = deleteUserPort;
+        this.passwordEncoderPort = passwordEncoderPort;
+        this.roleHierarchyService = roleHierarchyService;
+    }
 
     @Override
     public User update(UpdateCommand command) {

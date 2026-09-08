@@ -1,9 +1,7 @@
 package ken.vivid.auth.application.service;
 
 import ken.vivid.auth.domain.model.enums.Role;
-import org.springframework.stereotype.Service;
 
-@Service
 public class RoleHierarchyService {
 
     public boolean canAssignRole(Role actingUserRole, Role targetRole) {

@@ -18,6 +18,18 @@ public class User {
 
 
     }
+
+    public User(Long id, Role role, String firstName, String lastName, String userName, String phone, String email, String password) {
+        this.id = id;
+        this.role = role;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+    }
+
     public User(Role role, String firstName, String lastName, String userName, String phone, String email, String password) {
         this.role = role;
         this.firstName = firstName;

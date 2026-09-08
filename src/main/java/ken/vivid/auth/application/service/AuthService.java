@@ -10,11 +10,7 @@ import ken.vivid.auth.domain.exception.UserAlreadyExistsException;
 import ken.vivid.auth.domain.model.AuthResult;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.auth.domain.model.enums.Role;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
-@RequiredArgsConstructor
 public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase, GetCurrentUserUseCase {
 
     private final LoadUserPort loadUserPort;
@@ -22,6 +18,14 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
     private final PasswordEncoderPort passwordEncoderPort;
     private final TokenGeneratorPort tokenGeneratorPort;
     private final TokenBlacklistPort tokenBlacklistPort;
+
+    public AuthService(LoadUserPort loadUserPort, SaveUserPort saveUserPort, PasswordEncoderPort passwordEncoderPort, TokenGeneratorPort tokenGeneratorPort, TokenBlacklistPort tokenBlacklistPort) {
+        this.loadUserPort = loadUserPort;
+        this.saveUserPort = saveUserPort;
+        this.passwordEncoderPort = passwordEncoderPort;
+        this.tokenGeneratorPort = tokenGeneratorPort;
+        this.tokenBlacklistPort = tokenBlacklistPort;
+    }
 
     @Override
     public User getCurrentUser(String email) {
@@ -63,14 +67,13 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
         }
 
         User newUser = new User(
-                0L,
+                Role.CUSTOMER,
                 registerCommand.firstName(),
                 registerCommand.lastName(),
                 registerCommand.userName(),
+                registerCommand.phone(),
                 registerCommand.email(),
-                passwordEncoderPort.hash(registerCommand.rawPassword()),
-                Role.CUSTOMER,
-                true
+                passwordEncoderPort.hash(registerCommand.confirmPassword())
         );
 
         return saveUserPort.save(newUser);
@@ -84,14 +87,13 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
         }
 
         User newUser = new User(
-                0L,
+                storeCommand.role(),
                 storeCommand.firstName(),
                 storeCommand.lastName(),
                 storeCommand.userName(),
+                storeCommand.phone(),
                 storeCommand.email(),
-                passwordEncoderPort.hash(storeCommand.rawPassword()),
-                storeCommand.role(),
-                true
+                passwordEncoderPort.hash(storeCommand.rawPassword())
         );
 
         return saveUserPort.save(newUser);

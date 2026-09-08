@@ -23,8 +23,8 @@ spring:
   # logging DEBUG…). In production, override via environment variable:
   #   SPRING_PROFILES_ACTIVE=prod
   # ---------------------------------------------------------------------------
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+#  profiles:
+#    active: ${SPRING_PROFILES_ACTIVE:dev}
 
   # ---------------------------------------------------------------------------
   # DATA SOURCE — MySQL via Spring Data JPA / Hibernate
