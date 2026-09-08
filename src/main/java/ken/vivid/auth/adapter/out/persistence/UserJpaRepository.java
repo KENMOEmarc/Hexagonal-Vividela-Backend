@@ -2,16 +2,19 @@ package ken.vivid.auth.adapter.out.persistence;
 
 import ken.vivid.auth.domain.model.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
 public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 
-    Optional<UserJpaEntity> findByEmail(String email);
+    Optional<UserJpaEntity> findByUserName(String userName);
 
     boolean existsByEmail(String email);
 
-    Optional<UserJpaEntity> findByEmailOrUserName(String identifier, String identifier1);
+    @Query("SELECT u FROM UserJpaEntity u WHERE u.email = :identifier OR u.userName = :identifier")
+    Optional<UserJpaEntity> findByEmailOrUserName(@Param("identifier") String identifier);
 
     boolean existsByUserName(String userName);
 

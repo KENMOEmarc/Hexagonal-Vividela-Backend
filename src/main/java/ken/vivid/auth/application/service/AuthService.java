@@ -29,13 +29,13 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
 
     @Override
     public User getCurrentUser(String email) {
-        return loadUserPort.loadByEmail(email).orElseThrow(() -> new InvalidCredentialsException("User not found"));
+        return loadUserPort.loadByEmailOrUserName(email).orElseThrow(() -> new InvalidCredentialsException("User not found"));
     }
 
     @Override
     public AuthResult login(LoginCommand loginCommand) {
 
-        User user = loadUserPort.loadByEmail(loginCommand.email())
+        User user = loadUserPort.loadByEmailOrUserName(loginCommand.email())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
 
         if(!passwordEncoderPort.matches(loginCommand.rawPassword(), user.getPassword())) {
@@ -56,14 +56,14 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
     }
 
     @Override
-    public User register(RegisterCommand registerCommand) {
+    public AuthResult register(RegisterCommand registerCommand) {
 
         if (!registerCommand.rawPassword().equals(registerCommand.confirmPassword())) {
             throw new InvalidCredentialsException("Passwords do not match");
         }
 
         if (loadUserPort.existsByEmail(registerCommand.email())) {
-            throw new UserAlreadyExistsException("Un compte existe déjà avec cet email : " + registerCommand.email());
+            throw new UserAlreadyExistsException("An account already exists with this email : " + registerCommand.email());
         }
 
         User newUser = new User(
@@ -73,10 +73,14 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
                 registerCommand.userName(),
                 registerCommand.phone(),
                 registerCommand.email(),
-                passwordEncoderPort.hash(registerCommand.confirmPassword())
+                passwordEncoderPort.hash(registerCommand.confirmPassword()),
+                true
         );
 
-        return saveUserPort.save(newUser);
+        User savedUser = saveUserPort.save(newUser);
+        String token = tokenGeneratorPort.generateToken(savedUser);
+        return new AuthResult(token, tokenGeneratorPort.getExpirationMillis(),
+                savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
     }
 
     @Override

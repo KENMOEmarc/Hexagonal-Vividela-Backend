@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface LoadUserPort {
 
-    Optional<User> loadByEmail(String email);
+    Optional<User> loadByEmailOrUserName(String identifier);
 
     Optional<User> loadById(Long id);
 
-    Optional<User> loadByIdentifier(String identifier);
+    Optional<User> loadByUserName(String userName);
 
     boolean existsByEmail(String email);
 

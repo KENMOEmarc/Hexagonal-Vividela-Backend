@@ -1,6 +1,5 @@
 package ken.vivid.auth.adapter.in.web.security;
 
-
 import ken.vivid.auth.application.port.out.LoadUserPort;
 import ken.vivid.auth.domain.model.User;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +19,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final LoadUserPort loadUserPort;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = loadUserPort.loadByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable : " + username));
+    public UserDetails loadUserByUsername(String username) {
+        User user = loadUserPort.loadByEmailOrUserName(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found : " + username));
 
         return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())
+                .username(user.getUserName())
                 .password(user.getPassword())
                 .disabled(!user.getActive())
                 .authorities(List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())))

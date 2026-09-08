@@ -48,6 +48,7 @@ spring:
   # JPA / HIBERNATE
   # ---------------------------------------------------------------------------
   jpa:
+    open-in-view: false
     hibernate:
       # ddl-auto strategies :
       #   none        → no schema action
@@ -59,7 +60,6 @@ spring:
     show-sql: true                   # Displays SQL queries in logs
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true             # Formats displayed SQL for readability
 
   # ---------------------------------------------------------------------------
@@ -123,7 +123,7 @@ security:
     blacklist-cleanup:
       # Delay between two executions of the purge job for expired revoked tokens
       # in the revoked_tokens table (ms). Default: 1 hour.
-      fixed-delay-ms: ${JWT_BLACKLIST_CLEANUP_FIXED_DELAY_MS:3600000}
+      fixed-delay-ms: ${JWT_BLACKLIST_CLEANUP_FIXED_DELAY_MS}
 
 # ---------------------------------------------------------------------------
 # NOTIFICATIONS — Default sender for outgoing emails
@@ -216,5 +216,6 @@ logging:
     org.springframework.security: debug
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql: trace
+    org.springframework.security.config.annotation.authentication.configuration.InitializeAuthenticationProviderBeanManagerConfigurer: error
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

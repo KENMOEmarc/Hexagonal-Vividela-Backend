@@ -1,11 +1,12 @@
 package ken.vivid.auth.application.port.in;
 
+import ken.vivid.auth.domain.model.AuthResult;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.auth.domain.model.enums.Role;
 
 public interface RegisterUseCase {
 
-    User register(RegisterCommand registerCommand);
+    AuthResult register(RegisterCommand registerCommand);
 
     User store(StoreCommand storeCommand);
 

@@ -1,5 +1,6 @@
 package ken.vivid.shared.adapter.web;
 
+import ken.vivid.auth.domain.exception.InvalidCredentialsException;
 import ken.vivid.shared.domain.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,6 +24,7 @@ public class GlobalExceptionHandler {
       ResourceNotFoundException.class,  HttpStatus.NOT_FOUND,
             DuplicateResourceException.class, HttpStatus.CONFLICT,
             InvalidRequestException.class, HttpStatus.BAD_REQUEST,
+            InvalidCredentialsException.class, HttpStatus.FORBIDDEN,
             InvalidStateTransitionException.class, HttpStatus.CONFLICT
     );
 

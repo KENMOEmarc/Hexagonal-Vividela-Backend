@@ -29,4 +29,5 @@ class RevokedTokenJpaEntity {
     String getToken() {
         return token;
     }
+
 }

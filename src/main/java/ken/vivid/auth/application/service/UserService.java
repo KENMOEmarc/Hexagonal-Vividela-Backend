@@ -35,18 +35,18 @@ public class UserService implements UpdateUserUseCase, DeleteUserUseCase, Change
     @Override
     public User update(UpdateCommand command) {
         User target = loadUserPort.loadById(command.targetUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable : " + command.targetUserId()));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found : " + command.targetUserId()));
 
         boolean isSelfUpdate = command.actingUserId().equals(command.targetUserId());
         if (!isSelfUpdate && !roleHierarchyService.canModifyUser(command.actingUserRole(), target.getRole())) {
-            throw new AccessDeniedException("Vous n'êtes pas autorisé à modifier cet utilisateur");
+            throw new AccessDeniedException("You are not authorized to modify this user");
         }
 
         if (!target.getEmail().equals(command.email()) && loadUserPort.existsByEmail(command.email())) {
-            throw new UserAlreadyExistsException("Cet email est déjà utilisé : " + command.email());
+            throw new UserAlreadyExistsException("This email is already in use : " + command.email());
         }
         if (!target.getUserName().equals(command.userName()) && loadUserPort.existsByUserName(command.userName())) {
-            throw new UserAlreadyExistsException("Ce nom d'utilisateur est déjà pris : " + command.userName());
+            throw new UserAlreadyExistsException("This username is already taken : " + command.userName());
         }
 
         target.setFirstName(command.firstName());
@@ -61,13 +61,13 @@ public class UserService implements UpdateUserUseCase, DeleteUserUseCase, Change
     @Override
     public User changePassword(ChangePasswordCommand command) {
         User user = loadUserPort.loadById(command.userId())
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable : " + command.userId()));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found : " + command.userId()));
 
         if (!passwordEncoderPort.matches(command.currentPassword(), user.getPassword())) {
-            throw new InvalidCredentialsException("Mot de passe actuel incorrect");
+            throw new InvalidCredentialsException("Current password is incorrect");
         }
         if (!command.newPassword().equals(command.confirmPassword())) {
-            throw new PasswordMismatchException("Les mots de passe ne correspondent pas");
+            throw new PasswordMismatchException("Passwords do not match");
         }
 
         user.setPassword(passwordEncoderPort.hash(command.newPassword()));
@@ -77,16 +77,16 @@ public class UserService implements UpdateUserUseCase, DeleteUserUseCase, Change
     @Override
     public void delete(DeleteCommand command) {
         User target = loadUserPort.loadById(command.targetUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable : " + command.targetUserId()));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found : " + command.targetUserId()));
 
         if (command.actingUserId().equals(command.targetUserId())) {
-            throw new InvalidRequestException("Vous ne pouvez pas supprimer votre propre compte");
+            throw new InvalidRequestException("You cannot delete your own account");
         }
         if (!roleHierarchyService.canModifyUser(command.actingUserRole(), target.getRole())) {
-            throw new AccessDeniedException("Vous n'êtes pas autorisé à supprimer cet utilisateur");
+            throw new AccessDeniedException("You are not authorized to delete this user");
         }
         if (target.getRole() == Role.ADMIN && loadUserPort.countByRole(Role.ADMIN) <= 1) {
-            throw new InvalidRequestException("Impossible de supprimer le dernier compte administrateur");
+            throw new InvalidRequestException("Cannot delete the last administrator account");
         }
 
         deleteUserPort.delete(command.targetUserId());

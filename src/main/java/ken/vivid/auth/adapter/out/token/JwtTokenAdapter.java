@@ -23,7 +23,7 @@ public class JwtTokenAdapter implements TokenGeneratorPort {
     private String secret;
 
     @Value("${jwt.expiration}")
-    private long expirationMillis;
+    private long expirationSecond;
 
     private SecretKey signingKey;
 
@@ -41,10 +41,10 @@ public class JwtTokenAdapter implements TokenGeneratorPort {
     public String generateToken(User user) {
         Date now = new Date();
         return Jwts.builder()
-                .subject(user.getEmail())
+                .subject(user.getUserName())
                 .claim("role", user.getRole().name())
                 .issuedAt(now)
-                .expiration(new Date(now.getTime() + expirationMillis))
+                .expiration(new Date(now.getTime() + expirationSecond))
                 .signWith(signingKey)
                 .compact();
     }
@@ -62,6 +62,6 @@ public class JwtTokenAdapter implements TokenGeneratorPort {
 
     @Override
     public long getExpirationMillis() {
-        return expirationMillis;
+        return expirationSecond;
     }
 }

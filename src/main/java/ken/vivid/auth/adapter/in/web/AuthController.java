@@ -37,12 +37,12 @@ public class AuthController {
         AuthResult result = loginUseCase.login(
                 new LoginUseCase.LoginCommand(request.getIdentifier(), request.getPassword())
         );
-        return ResponseEntity.ok(ApiResponse.success("Connexion réussie", LoginResponse.from(result)));
+        return ResponseEntity.ok(ApiResponse.success("Connection successful", LoginResponse.from(result)));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserDto>> register(@Valid @RequestBody RegisterRequest request) {
-        User user = registerUseCase.register(new RegisterUseCase.RegisterCommand(
+    public ResponseEntity<ApiResponse<LoginResponse>> register(@Valid @RequestBody RegisterRequest request) {
+        AuthResult result = registerUseCase.register(new RegisterUseCase.RegisterCommand(
                 request.getFirstName(),
                 request.getLastName(),
                 request.getUserName(),
@@ -51,7 +51,7 @@ public class AuthController {
                 request.getPassword(),
                 request.getConfirmPassword()
         ));
-        return ResponseEntity.ok(ApiResponse.success("Compte créé avec succès", UserDto.from(user)));
+        return ResponseEntity.ok(ApiResponse.success("Account created successfully", LoginResponse.from(result)));
     }
 
     /**
@@ -74,24 +74,24 @@ public class AuthController {
                 request.getPassword(),
                 parseRole(request.getRole())
         ));
-        return ResponseEntity.ok(ApiResponse.success("Compte créé avec succès", UserDto.from(user)));
+        return ResponseEntity.ok(ApiResponse.success("Account created successfully", UserDto.from(user)));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         logoutUseCase.logout(token);
-        return ResponseEntity.ok(ApiResponse.success("Déconnexion réussie"));
+        return ResponseEntity.ok(ApiResponse.success("Logout successful"));
     }
 
     private Role parseRole(String role) {
         if (role == null || role.isBlank()) {
-            throw new InvalidRequestException("Le rôle est obligatoire pour la création d'un compte via cet endpoint");
+            throw new InvalidRequestException("The role is required for creating an account via this endpoint");
         }
         try {
             return Role.valueOf(role.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new InvalidRequestException("Rôle invalide : " + role);
+            throw new InvalidRequestException("Invalid role : " + role);
         }
     }
 
@@ -102,6 +102,6 @@ public class AuthController {
                 .map(authority -> authority.substring(ROLE_PREFIX.length()))
                 .map(Role::valueOf)
                 .findFirst()
-                .orElseThrow(() -> new AccessDeniedException("Rôle de l'utilisateur courant introuvable"));
+                .orElseThrow(() -> new AccessDeniedException("Role of the current user not found"));
     }
 }

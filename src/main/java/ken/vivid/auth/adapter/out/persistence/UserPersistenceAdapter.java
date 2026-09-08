@@ -18,8 +18,8 @@ public class UserPersistenceAdapter implements LoadUserPort, SaveUserPort, Delet
     private final UserMapper mapper;
 
     @Override
-    public Optional<User> loadByEmail(String email) {
-        return jpaRepository.findByEmail(email).map(mapper::toDomain);
+    public Optional<User> loadByEmailOrUserName(String identifier) {
+        return jpaRepository.findByEmailOrUserName(identifier).map(mapper::toDomain);
     }
 
     @Override
@@ -28,8 +28,8 @@ public class UserPersistenceAdapter implements LoadUserPort, SaveUserPort, Delet
     }
 
     @Override
-    public Optional<User> loadByIdentifier(String identifier) {
-        return jpaRepository.findByEmailOrUserName(identifier, identifier).map(mapper::toDomain);
+    public Optional<User> loadByUserName(String userName) {
+        return jpaRepository.findByUserName(userName).map(mapper::toDomain);
     }
 
     @Override

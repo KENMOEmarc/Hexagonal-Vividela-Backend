@@ -40,7 +40,7 @@ public class User {
         this.password = password;
     }
 
-    public User(Role role, String firstName, String lastName, String userName, String phone, String email, String password, Integer loyaltyPoints, Boolean isActive) {
+    public User(Role role, String firstName, String lastName, String userName, String phone, String email, String password, Boolean isActive) {
         this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -48,7 +48,6 @@ public class User {
         this.phone = phone;
         this.email = email;
         this.password = password;
-        this.loyaltyPoints = loyaltyPoints;
         this.isActive = isActive;
     }
 
