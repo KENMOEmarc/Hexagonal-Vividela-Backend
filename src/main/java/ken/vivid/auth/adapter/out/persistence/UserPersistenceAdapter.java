@@ -8,6 +8,7 @@ import ken.vivid.auth.domain.model.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -31,6 +32,11 @@ public class UserPersistenceAdapter implements LoadUserPort,
     @Override
     public Optional<User> loadByUserName(String userName) {
         return jpaRepository.findByUserName(userName).map(mapper::toDomain);
+    }
+
+    @Override
+    public List<User> loadAll() {
+        return jpaRepository.findAll().stream().map(mapper::toDomain).toList();
     }
 
     @Override

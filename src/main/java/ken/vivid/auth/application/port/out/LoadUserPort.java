@@ -3,6 +3,7 @@ package ken.vivid.auth.application.port.out;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.auth.domain.model.enums.Role;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface LoadUserPort {
@@ -12,6 +13,8 @@ public interface LoadUserPort {
     Optional<User> loadById(Long id);
 
     Optional<User> loadByUserName(String userName);
+
+    List<User> loadAll();
 
     boolean existsByEmail(String email);
 

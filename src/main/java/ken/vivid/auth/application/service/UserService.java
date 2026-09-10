@@ -2,6 +2,7 @@ package ken.vivid.auth.application.service;
 
 import ken.vivid.auth.application.port.in.ChangePasswordUseCase;
 import ken.vivid.auth.application.port.in.DeleteUserUseCase;
+import ken.vivid.auth.application.port.in.GetUserUseCase;
 import ken.vivid.auth.application.port.in.UpdateUserUseCase;
 import ken.vivid.auth.application.port.out.DeleteUserPort;
 import ken.vivid.auth.application.port.out.LoadUserPort;
@@ -16,8 +17,10 @@ import ken.vivid.shared.domain.exception.InvalidRequestException;
 import ken.vivid.shared.domain.exception.ResourceNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 
+import java.util.List;
+
 public class UserService implements UpdateUserUseCase,
-        DeleteUserUseCase, ChangePasswordUseCase {
+        DeleteUserUseCase, ChangePasswordUseCase, GetUserUseCase {
 
     private final LoadUserPort loadUserPort;
     private final SaveUserPort saveUserPort;
@@ -31,6 +34,17 @@ public class UserService implements UpdateUserUseCase,
         this.deleteUserPort = deleteUserPort;
         this.passwordEncoderPort = passwordEncoderPort;
         this.roleHierarchyService = roleHierarchyService;
+    }
+
+    @Override
+    public List<User> findAll() {
+        return loadUserPort.loadAll();
+    }
+
+    @Override
+    public User find(Long id) {
+        return loadUserPort.loadById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found : " + id));
     }
 
     @Override
@@ -92,4 +106,5 @@ public class UserService implements UpdateUserUseCase,
 
         deleteUserPort.delete(command.targetUserId());
     }
+
 }

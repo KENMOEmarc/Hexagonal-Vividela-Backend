@@ -4,11 +4,8 @@ import jakarta.validation.Valid;
 import ken.vivid.auth.adapter.in.web.dto.UserDto;
 import ken.vivid.auth.adapter.in.web.payloads.ChangePasswordRequest;
 import ken.vivid.auth.adapter.in.web.payloads.UpdateUserRequest;
-import ken.vivid.auth.application.port.in.ChangePasswordUseCase;
-import ken.vivid.auth.application.port.in.DeleteUserUseCase;
-import ken.vivid.auth.application.port.in.GetCurrentUserUseCase;
-import ken.vivid.auth.application.port.in.UpdateUserUseCase;
-import ken.vivid.auth.application.service.UserService;
+import ken.vivid.auth.adapter.out.persistence.UserMapper;
+import ken.vivid.auth.application.port.in.*;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.shared.adapter.web.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
+    private final GetUserUseCase getUserUseCase;
     private final GetCurrentUserUseCase getCurrentUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
@@ -36,7 +34,22 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("User profile", UserDto.from(user)));
     }
 
-    @PutMapping("/{id}")
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<ApiResponse<UserDto>> getUserById(@PathVariable Long id) {
+        User user = getUserUseCase.find(id);
+        return ResponseEntity.ok(ApiResponse.success("User found", UserDto.from(user)));
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers () {
+        List<User> users = getUserUseCase.findAll();
+        List<UserDto> userDtos = users.stream().map(UserDto::from).toList();
+        return ResponseEntity.ok(ApiResponse.success("Users found", userDtos));
+    }
+
+    @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<UserDto>> update(@PathVariable Long id,
                                                        @Valid @RequestBody UpdateUserRequest request,
                                                        Authentication authentication) {
@@ -54,8 +67,19 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("Profile updated", UserDto.from(updated)));
     }
 
+    @GetMapping("/customers")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ResponseEntity<ApiResponse<List<UserDto>>> getAllCustomers() {
+        List<User> customers = getUserUseCase.findAll();
+        List<UserDto> customerDtos = customers.stream()
+                .filter(user -> user.getRole().name().equals("CUSTOMER"))
+                .map(UserDto::from)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success("Customers found", customerDtos));
+    }
+
     /** Deliberately self-service only — no admin override to change someone else's password. */
-    @PutMapping("/{id}/password")
+    @PatchMapping("/{id}/password")
     public ResponseEntity<ApiResponse<Void>> changePassword(@PathVariable Long id,
                                                             @Valid @RequestBody ChangePasswordRequest request,
                                                             Authentication authentication) {
