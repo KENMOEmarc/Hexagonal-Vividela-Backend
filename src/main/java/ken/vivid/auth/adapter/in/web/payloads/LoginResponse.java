@@ -1,25 +1,46 @@
 package ken.vivid.auth.adapter.in.web.payloads;
 
 import ken.vivid.auth.domain.model.AuthResult;
+import ken.vivid.auth.domain.model.User;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
 public class LoginResponse {
-    private String token;
-    private long expiresIn;
-    private Long userId;
-    private String email;
-    private String role;
+    private String accessToken;
+    @Builder.Default
+    private String tokenType = "Bearer";
+    private long expiresIn; // en secondes, comme dans AuthResponse.expiresIn côté auth-backend
+    private UserInfo user;
+
+    @Getter
+    @Builder
+    public static class UserInfo {
+        private Long id;
+        private String userName;
+        private String email;
+        private String phone;
+        private String firstName;
+        private String lastName;
+        private String role;
+    }
 
     public static LoginResponse from(AuthResult result) {
+        User user = result.user();
         return LoginResponse.builder()
-                .token(result.token())
-                .expiresIn(result.expiresInMillis())
-                .userId(result.userId())
-                .email(result.email())
-                .role(result.role().name())
+                .accessToken(result.token())
+                .tokenType("Bearer")
+                .expiresIn(result.expiresInMillis() / 1000) // ms -> secondes
+                .user(UserInfo.builder()
+                        .id(user.getId())
+                        .userName(user.getUserName())
+                        .email(user.getEmail())
+                        .phone(user.getPhone())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .role(user.getRole().name())
+                        .build())
                 .build();
     }
 }

@@ -23,7 +23,7 @@ public class JwtTokenAdapter implements TokenGeneratorPort {
     private String secret;
 
     @Value("${jwt.expiration}")
-    private long expirationSecond;
+    private long expirationMillis;
 
     private SecretKey signingKey;
 
@@ -32,7 +32,7 @@ public class JwtTokenAdapter implements TokenGeneratorPort {
         byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
         if (secretBytes.length < MIN_SECRET_LENGTH_BYTES) {
             throw new IllegalStateException(
-                    "jwt.secret doit contenir au moins " + MIN_SECRET_LENGTH_BYTES + " octets (HS256)");
+                    "The jwt.secret must contain at least " + MIN_SECRET_LENGTH_BYTES + " octets (HS256)");
         }
         this.signingKey = Keys.hmacShaKeyFor(secretBytes);
     }
@@ -44,7 +44,7 @@ public class JwtTokenAdapter implements TokenGeneratorPort {
                 .subject(user.getUserName())
                 .claim("role", user.getRole().name())
                 .issuedAt(now)
-                .expiration(new Date(now.getTime() + expirationSecond))
+                .expiration(new Date(now.getTime() + expirationMillis))
                 .signWith(signingKey)
                 .compact();
     }
@@ -62,6 +62,6 @@ public class JwtTokenAdapter implements TokenGeneratorPort {
 
     @Override
     public long getExpirationMillis() {
-        return expirationSecond;
+        return expirationMillis;
     }
 }

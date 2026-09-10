@@ -11,7 +11,8 @@ import ken.vivid.auth.domain.model.AuthResult;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.auth.domain.model.enums.Role;
 
-public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase, GetCurrentUserUseCase {
+public class AuthService implements LoginUseCase,
+        LogoutUseCase, RegisterUseCase, GetCurrentUserUseCase {
 
     private final LoadUserPort loadUserPort;
     private final SaveUserPort saveUserPort;
@@ -47,7 +48,7 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
         }
 
         String token = tokenGeneratorPort.generateToken(user);
-        return new AuthResult(token, tokenGeneratorPort.getExpirationMillis(), user.getId(), user.getEmail(), user.getRole());
+        return new AuthResult(token, tokenGeneratorPort.getExpirationMillis(), user);
     }
 
     @Override
@@ -79,8 +80,7 @@ public class AuthService implements LoginUseCase, LogoutUseCase, RegisterUseCase
 
         User savedUser = saveUserPort.save(newUser);
         String token = tokenGeneratorPort.generateToken(savedUser);
-        return new AuthResult(token, tokenGeneratorPort.getExpirationMillis(),
-                savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
+        return new AuthResult(token, tokenGeneratorPort.getExpirationMillis(), savedUser);
     }
 
     @Override

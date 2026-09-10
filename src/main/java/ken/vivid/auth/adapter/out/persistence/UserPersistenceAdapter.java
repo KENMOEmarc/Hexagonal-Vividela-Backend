@@ -12,7 +12,8 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UserPersistenceAdapter implements LoadUserPort, SaveUserPort, DeleteUserPort {
+public class UserPersistenceAdapter implements LoadUserPort,
+        SaveUserPort, DeleteUserPort {
 
     private final UserJpaRepository jpaRepository;
     private final UserMapper mapper;

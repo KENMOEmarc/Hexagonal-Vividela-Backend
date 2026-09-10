@@ -16,7 +16,8 @@ import ken.vivid.shared.domain.exception.InvalidRequestException;
 import ken.vivid.shared.domain.exception.ResourceNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 
-public class UserService implements UpdateUserUseCase, DeleteUserUseCase, ChangePasswordUseCase {
+public class UserService implements UpdateUserUseCase,
+        DeleteUserUseCase, ChangePasswordUseCase {
 
     private final LoadUserPort loadUserPort;
     private final SaveUserPort saveUserPort;
