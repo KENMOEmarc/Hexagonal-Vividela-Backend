@@ -73,7 +73,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id, Authentication authentication) {
         User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
         deleteUserUseCase.delete(new DeleteUserUseCase.DeleteCommand(id, actingUser.getId(), actingUser.getRole()));

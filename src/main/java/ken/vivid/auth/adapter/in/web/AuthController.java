@@ -54,13 +54,6 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success("Account created successfully", LoginResponse.from(result)));
     }
 
-    /**
-     * Staff-only account creation (can set an arbitrary role). Unlike
-     * /register, this must never be left reachable by any authenticated
-     * user — @PreAuthorize plus the RoleHierarchyService check inside
-     * AuthService.store() enforce that only ADMIN/MANAGER can call it, and
-     * that a MANAGER can't mint another ADMIN.
-     */
     @PostMapping("/store")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<ApiResponse<UserDto>> store(@Valid @RequestBody RegisterRequest request,
