@@ -45,4 +45,32 @@ public class StockMovement {
             return new StockMovement(id, stockId, userId, quantity, movementType, notes, movementDate);
         }
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getStockId() {
+        return stockId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public MovementType getMovementType() {
+        return movementType;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public Instant getMovementDate() {
+        return movementDate;
+    }
 }
