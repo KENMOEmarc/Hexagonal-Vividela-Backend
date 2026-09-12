@@ -5,9 +5,11 @@ import ken.vivid.auth.adapter.in.web.dto.UserDto;
 import ken.vivid.auth.adapter.in.web.payloads.LoginRequest;
 import ken.vivid.auth.adapter.in.web.payloads.LoginResponse;
 import ken.vivid.auth.adapter.in.web.payloads.RegisterRequest;
-import ken.vivid.auth.application.port.in.LoginUseCase;
+import ken.vivid.auth.application.port.in.saveUser.LoginCommand;
+import ken.vivid.auth.application.port.in.saveUser.LoginUseCase;
 import ken.vivid.auth.application.port.in.LogoutUseCase;
-import ken.vivid.auth.application.port.in.RegisterUseCase;
+import ken.vivid.auth.application.port.in.saveUser.RegisterUseCase;
+import ken.vivid.auth.application.port.in.saveUser.StoreCommand;
 import ken.vivid.auth.domain.model.AuthResult;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.auth.domain.model.enums.Role;
@@ -35,21 +37,21 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
         AuthResult result = loginUseCase.login(
-                new LoginUseCase.LoginCommand(request.getIdentifier(), request.getPassword())
+                new LoginCommand(request.getIdentifier(), request.getPassword())
         );
         return ResponseEntity.ok(ApiResponse.success("Connection successful", LoginResponse.from(result)));
     }
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<LoginResponse>> register(@Valid @RequestBody RegisterRequest request) {
-        AuthResult result = registerUseCase.register(new RegisterUseCase.RegisterCommand(
+        AuthResult result = registerUseCase.register(new StoreCommand(
                 request.getFirstName(),
                 request.getLastName(),
                 request.getUserName(),
                 request.getEmail(),
                 request.getPhone(),
                 request.getPassword(),
-                request.getConfirmPassword()
+                Role.CUSTOMER
         ));
         return ResponseEntity.ok(ApiResponse.success("Account created successfully", LoginResponse.from(result)));
     }
@@ -58,7 +60,7 @@ public class AuthController {
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<ApiResponse<UserDto>> store(@Valid @RequestBody RegisterRequest request,
                                                       Authentication authentication) {
-        User user = registerUseCase.store(new RegisterUseCase.StoreCommand(
+        User user = registerUseCase.store(new StoreCommand(
                 request.getFirstName(),
                 request.getLastName(),
                 request.getUserName(),

@@ -4,8 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ken.vivid.auth.application.port.out.TokenBlacklistPort;
-import ken.vivid.auth.application.port.out.TokenGeneratorPort;
+import ken.vivid.auth.application.port.out.TokenBlacklist;
+import ken.vivid.auth.application.port.out.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,8 +21,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final TokenGeneratorPort tokenGeneratorPort;
-    private final TokenBlacklistPort tokenBlacklistPort;
+    private final TokenGenerator tokenGenerator;
+    private final TokenBlacklist tokenBlacklist;
     private final UserDetailsServiceImpl userDetailsService;
 
     @Override
@@ -30,8 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         extractToken(request)
-                .filter(token -> !tokenBlacklistPort.isRevoked(token))
-                .flatMap(tokenGeneratorPort::validateAndExtractEmail)
+                .filter(token -> !tokenBlacklist.isRevoked(token))
+                .flatMap(tokenGenerator::validateAndExtractEmail)
                 .ifPresent(email -> authenticate(email, request));
 
         chain.doFilter(request, response);

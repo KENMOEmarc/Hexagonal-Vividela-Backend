@@ -1,8 +1,8 @@
 package ken.vivid.auth.adapter.out.persistence;
 
-import ken.vivid.auth.application.port.out.DeleteUserPort;
-import ken.vivid.auth.application.port.out.LoadUserPort;
-import ken.vivid.auth.application.port.out.SaveUserPort;
+import ken.vivid.auth.application.port.out.DeleteUser;
+import ken.vivid.auth.application.port.out.LoadUser;
+import ken.vivid.auth.application.port.out.SaveUser;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.auth.domain.model.enums.Role;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +12,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UserPersistenceAdapter implements LoadUserPort,
-        SaveUserPort, DeleteUserPort {
+public class UserPersistenceAdapter implements LoadUser, SaveUser, DeleteUser {
 
     private final UserJpaRepository jpaRepository;
     private final UserMapper mapper;

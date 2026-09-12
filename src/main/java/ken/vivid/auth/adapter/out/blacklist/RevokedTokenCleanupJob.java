@@ -1,6 +1,6 @@
 package ken.vivid.auth.adapter.out.blacklist;
 
-import ken.vivid.auth.application.port.out.TokenGeneratorPort;
+import ken.vivid.auth.application.port.out.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,13 +23,13 @@ import java.time.LocalDateTime;
 public class RevokedTokenCleanupJob {
 
     private final RevokedTokenJpaRepository repository;
-    private final TokenGeneratorPort tokenGeneratorPort;
+    private final TokenGenerator tokenGenerator;
 
     @Scheduled(fixedDelayString = "${security.jwt.blacklist-cleanup.fixed-delay-ms}")
     @Transactional
     public void purgeExpiredRevokedTokens() {
         LocalDateTime cutoff = LocalDateTime.now()
-                .minusNanos(tokenGeneratorPort.getExpirationMillis() * 1_000_000L);
+                .minusNanos(tokenGenerator.getExpirationMillis() * 1_000_000L);
         long deleted = repository.deleteByRevokedAtBefore(cutoff);
         if (deleted > 0) {
             log.info("Purged {} expired revoked token(s) from the blacklist", deleted);

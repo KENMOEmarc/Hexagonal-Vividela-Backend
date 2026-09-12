@@ -4,11 +4,10 @@ import jakarta.validation.Valid;
 import ken.vivid.auth.adapter.in.web.dto.UserDto;
 import ken.vivid.auth.adapter.in.web.payloads.ChangePasswordRequest;
 import ken.vivid.auth.adapter.in.web.payloads.UpdateUserRequest;
-import ken.vivid.auth.application.port.in.ChangePasswordUseCase;
-import ken.vivid.auth.application.port.in.DeleteUserUseCase;
+import ken.vivid.auth.application.port.in.updateUser.ChangePasswordUseCase;
+import ken.vivid.auth.application.port.in.deleteUser.DeleteUserUseCase;
 import ken.vivid.auth.application.port.in.GetCurrentUserUseCase;
-import ken.vivid.auth.application.port.in.UpdateUserUseCase;
-import ken.vivid.auth.application.service.UserService;
+import ken.vivid.auth.application.port.in.updateUser.UpdateUserUseCase;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.shared.adapter.web.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +16,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")

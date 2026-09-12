@@ -1,12 +1,12 @@
 package ken.vivid.auth.adapter.out.blacklist;
 
-import ken.vivid.auth.application.port.out.TokenBlacklistPort;
+import ken.vivid.auth.application.port.out.TokenBlacklist;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class MySqlTokenBlacklistAdapter implements TokenBlacklistPort {
+public class MySqlTokenBlacklistAdapter implements TokenBlacklist {
 
     private final RevokedTokenJpaRepository repository;
 

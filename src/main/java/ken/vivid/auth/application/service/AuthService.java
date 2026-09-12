@@ -1,9 +1,11 @@
 package ken.vivid.auth.application.service;
 
 import ken.vivid.auth.application.port.in.GetCurrentUserUseCase;
-import ken.vivid.auth.application.port.in.LoginUseCase;
+import ken.vivid.auth.application.port.in.saveUser.LoginCommand;
+import ken.vivid.auth.application.port.in.saveUser.LoginUseCase;
 import ken.vivid.auth.application.port.in.LogoutUseCase;
-import ken.vivid.auth.application.port.in.RegisterUseCase;
+import ken.vivid.auth.application.port.in.saveUser.RegisterUseCase;
+import ken.vivid.auth.application.port.in.saveUser.StoreCommand;
 import ken.vivid.auth.application.port.out.*;
 import ken.vivid.auth.domain.exception.InvalidCredentialsException;
 import ken.vivid.auth.domain.exception.UserAlreadyExistsException;
@@ -14,32 +16,33 @@ import ken.vivid.auth.domain.model.enums.Role;
 public class AuthService implements LoginUseCase,
         LogoutUseCase, RegisterUseCase, GetCurrentUserUseCase {
 
-    private final LoadUserPort loadUserPort;
-    private final SaveUserPort saveUserPort;
-    private final PasswordEncoderPort passwordEncoderPort;
-    private final TokenGeneratorPort tokenGeneratorPort;
-    private final TokenBlacklistPort tokenBlacklistPort;
+    private final LoadUser loadUser;
+    private final SaveUser saveUser;
+    private final PasswordEncoder passwordEncoder;
+    private final TokenGenerator tokenGenerator;
+    private final TokenBlacklist tokenBlacklist;
 
-    public AuthService(LoadUserPort loadUserPort, SaveUserPort saveUserPort, PasswordEncoderPort passwordEncoderPort, TokenGeneratorPort tokenGeneratorPort, TokenBlacklistPort tokenBlacklistPort) {
-        this.loadUserPort = loadUserPort;
-        this.saveUserPort = saveUserPort;
-        this.passwordEncoderPort = passwordEncoderPort;
-        this.tokenGeneratorPort = tokenGeneratorPort;
-        this.tokenBlacklistPort = tokenBlacklistPort;
+    public AuthService(LoadUser loadUser, SaveUser saveUser, PasswordEncoder passwordEncoder, TokenGenerator tokenGenerator, TokenBlacklist tokenBlacklist) {
+        this.loadUser = loadUser;
+        this.saveUser = saveUser;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenGenerator = tokenGenerator;
+        this.tokenBlacklist = tokenBlacklist;
     }
 
     @Override
     public User getCurrentUser(String email) {
-        return loadUserPort.loadByEmailOrUserName(email).orElseThrow(() -> new InvalidCredentialsException("User not found"));
+        return loadUser.loadByEmailOrUserName(email).orElseThrow(() -> new InvalidCredentialsException("User not found"));
     }
 
     @Override
     public AuthResult login(LoginCommand loginCommand) {
 
-        User user = loadUserPort.loadByEmailOrUserName(loginCommand.email())
+        //TODO Define Validations proper to the application layer
+        User user = loadUser.loadByEmailOrUserName(loginCommand.email())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
 
-        if(!passwordEncoderPort.matches(loginCommand.rawPassword(), user.getPassword())) {
+        if(!passwordEncoder.matches(loginCommand.rawPassword(), user.getPassword())) {
             throw new InvalidCredentialsException("Invalid email or password");
         }
 
@@ -47,59 +50,54 @@ public class AuthService implements LoginUseCase,
             throw new InvalidCredentialsException("User is not active");
         }
 
-        String token = tokenGeneratorPort.generateToken(user);
-        return new AuthResult(token, tokenGeneratorPort.getExpirationMillis(), user);
+        String token = tokenGenerator.generateToken(user);
+        return new AuthResult(token, tokenGenerator.getExpirationMillis(), user);
     }
 
     @Override
     public void logout(String token) {
-        tokenBlacklistPort.revoke(token);
+        tokenBlacklist.revoke(token);
     }
 
     @Override
-    public AuthResult register(RegisterCommand registerCommand) {
+    public AuthResult register(StoreCommand storeCommand) {
 
-        if (!registerCommand.rawPassword().equals(registerCommand.confirmPassword())) {
-            throw new InvalidCredentialsException("Passwords do not match");
+        if (loadUser.existsByEmail(storeCommand.email())) {
+            throw new UserAlreadyExistsException("An account already exists with this email : " + storeCommand.email());
         }
 
-        if (loadUserPort.existsByEmail(registerCommand.email())) {
-            throw new UserAlreadyExistsException("An account already exists with this email : " + registerCommand.email());
-        }
-
-        User newUser = new User(
+        User newUser = User.createUser(
                 Role.CUSTOMER,
-                registerCommand.firstName(),
-                registerCommand.lastName(),
-                registerCommand.userName(),
-                registerCommand.phone(),
-                registerCommand.email(),
-                passwordEncoderPort.hash(registerCommand.confirmPassword()),
-                true
+                storeCommand.firstName(),
+                storeCommand.lastName(),
+                storeCommand.userName(),
+                storeCommand.phone(),
+                storeCommand.email(),
+                passwordEncoder.hash(storeCommand.rawPassword())
         );
 
-        User savedUser = saveUserPort.save(newUser);
-        String token = tokenGeneratorPort.generateToken(savedUser);
-        return new AuthResult(token, tokenGeneratorPort.getExpirationMillis(), savedUser);
+        User savedUser = saveUser.save(newUser);
+        String token = tokenGenerator.generateToken(savedUser);
+        return new AuthResult(token, tokenGenerator.getExpirationMillis(), savedUser);
     }
 
     @Override
     public User store(StoreCommand storeCommand) {
 
-        if (loadUserPort.existsByEmail(storeCommand.email())) {
+        if (loadUser.existsByEmail(storeCommand.email())) {
             throw new UserAlreadyExistsException("An account already exits with this emain : " + storeCommand.email());
         }
 
-        User newUser = new User(
+        User newUser = User.createUser(
                 storeCommand.role(),
                 storeCommand.firstName(),
                 storeCommand.lastName(),
                 storeCommand.userName(),
                 storeCommand.phone(),
                 storeCommand.email(),
-                passwordEncoderPort.hash(storeCommand.rawPassword())
+                passwordEncoder.hash(storeCommand.rawPassword())
         );
 
-        return saveUserPort.save(newUser);
+        return saveUser.save(newUser);
     }
 }

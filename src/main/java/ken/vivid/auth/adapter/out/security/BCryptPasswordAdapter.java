@@ -1,15 +1,14 @@
 package ken.vivid.auth.adapter.out.security;
 
-import ken.vivid.auth.application.port.out.PasswordEncoderPort;
+import ken.vivid.auth.application.port.out.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class BCryptPasswordAdapter implements PasswordEncoderPort {
+public class BCryptPasswordAdapter implements PasswordEncoder {
 
-    private final PasswordEncoder passwordEncoder;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @Override
     public String hash(String rawPassword) {

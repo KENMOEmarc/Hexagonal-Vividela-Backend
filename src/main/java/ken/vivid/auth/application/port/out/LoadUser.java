@@ -5,7 +5,7 @@ import ken.vivid.auth.domain.model.enums.Role;
 
 import java.util.Optional;
 
-public interface LoadUserPort {
+public interface LoadUser {
 
     Optional<User> loadByEmailOrUserName(String identifier);
 

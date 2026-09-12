@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import ken.vivid.auth.application.port.out.TokenGeneratorPort;
+import ken.vivid.auth.application.port.out.TokenGenerator;
 import ken.vivid.auth.domain.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @Component
-public class JwtTokenAdapter implements TokenGeneratorPort {
+public class JwtTokenAdapter implements TokenGenerator {
 
     private static final int MIN_SECRET_LENGTH_BYTES = 32;
 

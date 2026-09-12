@@ -1,6 +1,6 @@
 package ken.vivid.auth.application.port.out;
 
-public interface PasswordEncoderPort {
+public interface PasswordEncoder {
 
     String hash(String rawPassword);
 

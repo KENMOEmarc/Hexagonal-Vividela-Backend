@@ -1,4 +1,4 @@
-package ken.vivid.auth.application.port.in;
+package ken.vivid.auth.application.port.in.updateUser;
 
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.auth.domain.model.enums.Role;

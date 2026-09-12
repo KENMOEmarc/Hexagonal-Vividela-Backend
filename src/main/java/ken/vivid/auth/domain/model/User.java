@@ -14,13 +14,8 @@ public class User {
     private Integer loyaltyPoints;
     private Boolean isActive;
 
-    public User() {
-
-
-    }
-
-    public User(Long id, Role role, String firstName, String lastName, String userName, String phone, String email, String password) {
-        this.id = id;
+    private User(Role role, String firstName, String lastName, String userName,
+                 String phone, String email, String password) {
         this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -28,38 +23,15 @@ public class User {
         this.phone = phone;
         this.email = email;
         this.password = password;
+        this.isActive = true;
     }
 
-    public User(Role role, String firstName, String lastName, String userName, String phone, String email, String password) {
-        this.role = role;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.phone = phone;
-        this.email = email;
-        this.password = password;
-    }
-
-    public User(Role role, String firstName, String lastName, String userName, String phone, String email, String password, Boolean isActive) {
-        this.role = role;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.phone = phone;
-        this.email = email;
-        this.password = password;
-        this.isActive = isActive;
-    }
-
-    public User(Long id, String email, String hashedPassword, String firstName, String lastName, String phone, Role role, boolean enabled) {
-        this.id = id;
-        this.email = email;
-        this.password = hashedPassword;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.role = role;
-        this.isActive = enabled;
+    public static User createUser(Role role, String firstName, String lastName,
+                                  String userName, String phone, String email, String password) {
+        if (userName.isBlank() || email.isBlank() || password.isBlank()) {
+            throw new IllegalArgumentException("Username, email, and password cannot be blank");
+        }
+       return new User(role, firstName, lastName, userName, phone, email, password);
     }
 
     public Long getId() {
@@ -136,83 +108,5 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public static class Builder {
-        private Long id;
-        private Role role;
-        private String firstName;
-        private String lastName;
-        private String userName;
-        private String phone;
-        private String email;
-        private String password;
-        private Integer loyaltyPoints;
-        private Boolean isActive;
-
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder role(Role role) {
-            this.role = role;
-            return this;
-        }
-
-        public Builder firstName(String firstName) {
-            this.firstName = firstName;
-            return this;
-        }
-
-        public Builder lastName(String lastName) {
-            this.lastName = lastName;
-            return this;
-        }
-
-        public Builder userName(String userName) {
-            this.userName = userName;
-            return this;
-        }
-
-        public Builder phone(String phone) {
-            this.phone = phone;
-            return this;
-        }
-
-        public Builder email(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public Builder password(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public Builder loyaltyPoints(Integer loyaltyPoints) {
-            this.loyaltyPoints = loyaltyPoints;
-            return this;
-        }
-
-        public Builder active(Boolean active) {
-            this.isActive = active;
-            return this;
-        }
-
-        public User build() {
-            User user = new User();
-            user.id = this.id;
-            user.role = this.role;
-            user.firstName = this.firstName;
-            user.lastName = this.lastName;
-            user.userName = this.userName;
-            user.phone = this.phone;
-            user.email = this.email;
-            user.password = this.password;
-            user.loyaltyPoints = this.loyaltyPoints;
-            user.isActive = this.isActive;
-            return user;
-        }
     }
 }
