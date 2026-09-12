@@ -28,8 +28,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private static final String ROLE_PREFIX = "ROLE_";
-
     private final LoginUseCase loginUseCase;
     private final RegisterUseCase registerUseCase;
     private final LogoutUseCase logoutUseCase;

@@ -1,7 +1,9 @@
 package ken.vivid.auth.application.service;
 
+import ken.vivid.auth.application.port.in.updateUser.ChangePasswordCommand;
 import ken.vivid.auth.application.port.in.updateUser.ChangePasswordUseCase;
 import ken.vivid.auth.application.port.in.deleteUser.DeleteUserUseCase;
+import ken.vivid.auth.application.port.in.updateUser.UpdateCommand;
 import ken.vivid.auth.application.port.in.updateUser.UpdateUserUseCase;
 import ken.vivid.auth.application.port.out.*;
 import ken.vivid.auth.domain.exception.InvalidCredentialsException;
@@ -68,18 +70,14 @@ public class UserService implements UpdateUserUseCase,
     }
 
     @Override
-    public void delete(DeleteCommand command) {
-        User target = loadUser.loadById(command.targetUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found : " + command.targetUserId()));
-
-        if (command.actingUserId().equals(command.targetUserId())) {
-            throw new InvalidRequestException("You cannot delete your own account");
-        }
+    public void delete(Long userId) {
+        User target = loadUser.loadById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found : " + userId));
 
         if (target.getRole() == Role.ADMIN && loadUser.countByRole(Role.ADMIN) <= 1) {
             throw new InvalidRequestException("Cannot delete the last administrator account");
         }
 
-        deleteUser.delete(command.targetUserId());
+        deleteUser.delete(userId);
     }
 }

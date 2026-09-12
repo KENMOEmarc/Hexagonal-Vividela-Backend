@@ -4,9 +4,11 @@ import jakarta.validation.Valid;
 import ken.vivid.auth.adapter.in.web.dto.UserDto;
 import ken.vivid.auth.adapter.in.web.payloads.ChangePasswordRequest;
 import ken.vivid.auth.adapter.in.web.payloads.UpdateUserRequest;
+import ken.vivid.auth.application.port.in.updateUser.ChangePasswordCommand;
 import ken.vivid.auth.application.port.in.updateUser.ChangePasswordUseCase;
 import ken.vivid.auth.application.port.in.deleteUser.DeleteUserUseCase;
 import ken.vivid.auth.application.port.in.GetCurrentUserUseCase;
+import ken.vivid.auth.application.port.in.updateUser.UpdateCommand;
 import ken.vivid.auth.application.port.in.updateUser.UpdateUserUseCase;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.shared.adapter.web.ApiResponse;
@@ -38,7 +40,7 @@ public class UserController {
                                                        @Valid @RequestBody UpdateUserRequest request,
                                                        Authentication authentication) {
         User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
-        User updated = updateUserUseCase.update(new UpdateUserUseCase.UpdateCommand(
+        User updated = updateUserUseCase.update(new UpdateCommand(
                 id,
                 actingUser.getId(),
                 actingUser.getRole(),
@@ -60,7 +62,7 @@ public class UserController {
         if (!actingUser.getId().equals(id)) {
             throw new AccessDeniedException("You can only modify your own password");
         }
-        changePasswordUseCase.changePassword(new ChangePasswordUseCase.ChangePasswordCommand(
+        changePasswordUseCase.changePassword(new ChangePasswordCommand(
                 id,
                 request.getCurrentPassword(),
                 request.getNewPassword(),
@@ -73,7 +75,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id, Authentication authentication) {
         User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
-        deleteUserUseCase.delete(new DeleteUserUseCase.DeleteCommand(id, actingUser.getId(), actingUser.getRole()));
+        deleteUserUseCase.delete(id);
         return ResponseEntity.ok(ApiResponse.success("Utilisateur supprimé"));
     }
 
