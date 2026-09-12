@@ -1,14 +1,12 @@
 package ken.vivid.product.application.service;
 
 
-import ken.vivid.product.application.port.in.stock.AdjustStockUseCase;
-import ken.vivid.product.application.port.in.stock.ConsumeStockUseCase;
-import ken.vivid.product.application.port.in.stock.RegisterStockEntryUseCase;
-import ken.vivid.product.application.port.out.product.LoadProductPort;
-import ken.vivid.product.application.port.out.product.SaveProductRegistrationPort;
-import ken.vivid.product.application.port.out.stock.LoadStockPort;
-import ken.vivid.product.application.port.out.stock.SaveStockMovementPort;
-import ken.vivid.product.application.port.out.stock.SaveStockPort;
+import ken.vivid.product.application.port.in.stock.*;
+import ken.vivid.product.application.port.out.product.LoadProduct;
+import ken.vivid.product.application.port.out.product.SaveProductRegistration;
+import ken.vivid.product.application.port.out.stock.LoadStock;
+import ken.vivid.product.application.port.out.stock.SaveStockMovement;
+import ken.vivid.product.application.port.out.stock.SaveStock;
 import ken.vivid.product.domain.exception.InsufficientStockException;
 import ken.vivid.product.domain.model.Product;
 import ken.vivid.product.domain.model.ProductRegistration;
@@ -25,19 +23,19 @@ import java.util.List;
 
 public class StockService implements RegisterStockEntryUseCase, ConsumeStockUseCase, AdjustStockUseCase {
 
-    private final LoadProductPort loadProductPort;
-    private final LoadStockPort loadStockPort;
-    private final SaveStockPort saveStockPort;
-    private final SaveProductRegistrationPort saveProductRegistrationPort;
-    private final SaveStockMovementPort saveStockMovementPort;
+    private final LoadProduct loadProduct;
+    private final LoadStock loadStock;
+    private final SaveStock saveStock;
+    private final SaveProductRegistration saveProductRegistration;
+    private final SaveStockMovement saveStockMovement;
     private final StockAllocationPolicy stockAllocationPolicy;
 
-    public StockService(LoadProductPort loadProductPort, LoadStockPort loadStockPort, SaveStockPort saveStockPort, SaveProductRegistrationPort saveProductRegistrationPort, SaveStockMovementPort saveStockMovementPort, StockAllocationPolicy stockAllocationPolicy) {
-        this.loadProductPort = loadProductPort;
-        this.loadStockPort = loadStockPort;
-        this.saveStockPort = saveStockPort;
-        this.saveProductRegistrationPort = saveProductRegistrationPort;
-        this.saveStockMovementPort = saveStockMovementPort;
+    public StockService(LoadProduct loadProduct, LoadStock loadStock, SaveStock saveStock, SaveProductRegistration saveProductRegistration, SaveStockMovement saveStockMovement, StockAllocationPolicy stockAllocationPolicy) {
+        this.loadProduct = loadProduct;
+        this.loadStock = loadStock;
+        this.saveStock = saveStock;
+        this.saveProductRegistration = saveProductRegistration;
+        this.saveStockMovement = saveStockMovement;
         this.stockAllocationPolicy = stockAllocationPolicy;
     }
 
@@ -47,40 +45,44 @@ public class StockService implements RegisterStockEntryUseCase, ConsumeStockUseC
             throw new InvalidRequestException("Quantity must be strictly positive");
         }
 
-        Product product = loadProductPort.loadById(command.productId())
+        Product product = loadProduct.loadById(command.productId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found : " + command.productId()));
 
         Instant now = Instant.now();
 
-        Stock newLot = new Stock.Builder()
-                .productId(product.getId())
-                .quantity(command.quantity())
-                .unitPrice(command.unitPrice())
-                .entryDate(now)
-                .expirationDate(command.expirationDate() == null ? null : command.expirationDate().atStartOfDay(ZoneOffset.UTC).toInstant())
-                .updatedAt(now)
-                .build();
+        Stock newLot = Stock.createStock(
+                null,
+                product.getId(),
+                command.quantity(),
+                now,
+                command.entryDate() == null ? now : command.entryDate(),
+                command.unitPrice(),
+                command.expirationDate() == null ? null : command.expirationDate().atStartOfDay(ZoneOffset.UTC).toInstant()
+        );
 
-        Stock savedLot = saveStockPort.save(newLot);
+        Stock savedLot = saveStock.save(newLot);
 
-        ProductRegistration registration = new ProductRegistration.Builder()
-                .productId(product.getId())
-                .quantity(command.quantity())
-                .registrationType(command.registrationType())
-                .notes(command.notes())
-                .registeredAt(now)
-                .build();
-        saveProductRegistrationPort.save(registration);
+        ProductRegistration registration = ProductRegistration.createProductRegistration(
+                null,
+                product.getId(),
+                command.employeeUserId(),
+                command.quantity(),
+                command.registrationType(),
+                command.notes(),
+                now
+        );
+        saveProductRegistration.save(registration);
 
-        StockMovement movement = new StockMovement.Builder()
-                .stockId(savedLot.getId())
-                .userId(command.employeeUserId())
-                .quantity(command.quantity())
-                .movementType(MovementType.RESTOCK)
-                .notes(command.notes())
-                .movementDate(now)
-                .build();
-        saveStockMovementPort.save(movement);
+        StockMovement movement = StockMovement.createStockMovement(
+                null,
+                savedLot.getId(),
+                command.employeeUserId(),
+                command.quantity(),
+                MovementType.RESTOCK,
+                command.notes(),
+                now
+        );
+        saveStockMovement.save(movement);
 
         return savedLot;
     }
@@ -91,17 +93,17 @@ public class StockService implements RegisterStockEntryUseCase, ConsumeStockUseC
             throw new InvalidRequestException("Quantity must be strictly positive");
         }
 
-        loadProductPort.loadById(command.productId())
+        loadProduct.loadById(command.productId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found : " + command.productId()));
 
-        BigDecimal totalAvailable = loadStockPort.totalQuantityByProduct(command.productId());
+        BigDecimal totalAvailable = loadStock.totalQuantityByProduct(command.productId());
         if (totalAvailable == null || totalAvailable.compareTo(command.quantity()) < 0) {
             throw new InsufficientStockException(
                     "Insufficient stock for product " + command.productId() + ": requested " + command.quantity()
                             + ", available " + (totalAvailable == null ? BigDecimal.ZERO : totalAvailable));
         }
 
-        List<Stock> availableStocks = loadStockPort.loadAvailableByProductOrderedByExpiration(command.productId());
+        List<Stock> availableStocks = loadStock.loadAvailableByProductOrderedByExpiration(command.productId());
         List<StockAllocationPolicy.Allocation> allocations = stockAllocationPolicy.allocate(availableStocks, command.quantity());
 
         Instant now = Instant.now();
@@ -113,17 +115,18 @@ public class StockService implements RegisterStockEntryUseCase, ConsumeStockUseC
             Stock lot = allocation.stock();
             lot.setQuantity(lot.getQuantity().subtract(allocation.quantityToConsume()));
             lot.setUpdatedAt(now);
-            saveStockPort.save(lot);
+            saveStock.save(lot);
 
-            StockMovement movement = new StockMovement.Builder()
-                    .stockId(lot.getId())
-                    .userId(command.actingUserId())
-                    .quantity(allocation.quantityToConsume())
-                    .movementType(MovementType.CONSUMPTION)
-                    .notes(notes)
-                    .movementDate(now)
-                    .build();
-            saveStockMovementPort.save(movement);
+            StockMovement movement = StockMovement.createStockMovement(
+                    null,
+                    lot.getId(),
+                    command.actingUserId(),
+                    allocation.quantityToConsume(),
+                    MovementType.CONSUMPTION,
+                    notes,
+                    now
+            );
+            saveStockMovement.save(movement);
         }
     }
 
@@ -133,7 +136,7 @@ public class StockService implements RegisterStockEntryUseCase, ConsumeStockUseC
             throw new InvalidRequestException("New stock level cannot be negative");
         }
 
-        Stock stock = loadStockPort.loadById(command.stockId())
+        Stock stock = loadStock.loadById(command.stockId())
                 .orElseThrow(() -> new ResourceNotFoundException("Stock lot not found : " + command.stockId()));
 
         BigDecimal previousQuantity = stock.getQuantity() == null ? BigDecimal.ZERO : stock.getQuantity();
@@ -146,17 +149,18 @@ public class StockService implements RegisterStockEntryUseCase, ConsumeStockUseC
         Instant now = Instant.now();
         stock.setQuantity(command.newStockLevel());
         stock.setUpdatedAt(now);
-        saveStockPort.save(stock);
+        saveStock.save(stock);
 
-        StockMovement movement = new StockMovement.Builder()
-                .stockId(stock.getId())
-                .userId(command.actingUserId())
-                .quantity(delta.abs())
-                .movementType(MovementType.ADJUSTMENT)
-                .notes(command.notes())
-                .movementDate(now)
-                .build();
-        saveStockMovementPort.save(movement);
+        StockMovement movement = StockMovement.createStockMovement(
+                null,
+                stock.getId(),
+                command.actingUserId(),
+                delta.abs(),
+                MovementType.ADJUSTMENT,
+                command.notes(),
+                now
+        );
+        saveStockMovement.save(movement);
     }
 
     private String appendReference(String notes, String reference) {

@@ -4,10 +4,7 @@ import jakarta.validation.Valid;
 import ken.vivid.product.adapter.in.web.dto.ProductDto;
 import ken.vivid.product.adapter.in.web.payloads.CreateProductRequest;
 import ken.vivid.product.adapter.in.web.payloads.UpdateProductRequest;
-import ken.vivid.product.application.port.in.product.CreateProductUseCase;
-import ken.vivid.product.application.port.in.product.DeleteProductUseCase;
-import ken.vivid.product.application.port.in.product.GetProductUseCase;
-import ken.vivid.product.application.port.in.product.UpdateProductUseCase;
+import ken.vivid.product.application.port.in.product.*;
 import ken.vivid.auth.application.port.in.GetCurrentUserUseCase;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.shared.adapter.web.ApiResponse;
@@ -47,7 +44,7 @@ public class ProductController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<ApiResponse<ProductDto>> create(@Valid @RequestBody CreateProductRequest request) {
-        ProductDto product = ProductDto.from(createProductUseCase.create(new CreateProductUseCase.CreateProductCommand(
+        ProductDto product = ProductDto.from(createProductUseCase.create(new CreateProductCommand(
                 request.getName(),
                 request.getThresholdValue(),
                 request.getMeasurementUnit()
@@ -59,7 +56,7 @@ public class ProductController {
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<ApiResponse<ProductDto>> update(@PathVariable Long id,
                                                           @Valid @RequestBody UpdateProductRequest request) {
-        ProductDto product = ProductDto.from(updateProductUseCase.update(new UpdateProductUseCase.UpdateProductCommand(
+        ProductDto product = ProductDto.from(updateProductUseCase.update(new UpdateProductCommand(
                 id,
                 null,
                 request.getName(),
@@ -73,7 +70,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id, Authentication authentication) {
         User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
-        deleteProductUseCase.delete(new DeleteProductUseCase.DeleteProductCommand(id, actingUser.getId()));
+        deleteProductUseCase.delete(id);
         return ResponseEntity.ok(ApiResponse.success("Product deleted"));
     }
 }

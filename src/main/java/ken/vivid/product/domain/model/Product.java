@@ -15,23 +15,17 @@ public class Product {
     private Instant createdAt;
     private Instant updatedAt;
 
-    public Product(Long productId, Long id, String name, BigDecimal thresholdValue, MeasurementUnit measurementUnit, Instant updatedAt, Instant createdAt) {
+    private Product(Long productId, String name, BigDecimal thresholdValue, MeasurementUnit measurementUnit, Instant createdAt, Instant updatedAt) {
         this.productId = productId;
-        this.id = id;
         this.name = name;
         this.thresholdValue = thresholdValue;
         this.measurementUnit = measurementUnit;
-        this.updatedAt = updatedAt;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    public Product(Long productId, String name, BigDecimal thresholdValue, MeasurementUnit measurementUnit, Instant createdAt, Instant updatedAt) {
-        this.productId = productId;
-        this.name = name;
-        this.thresholdValue = thresholdValue;
-        this.measurementUnit = measurementUnit;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+    public static Product createProduct(Long productId, String name, BigDecimal thresholdValue, MeasurementUnit measurementUnit, Instant createdAt, Instant updatedAt) {
+        return new Product(productId, name, thresholdValue, measurementUnit, createdAt, updatedAt);
     }
 
     public Long getId() {
@@ -76,27 +70,5 @@ public class Product {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public static class Builder {
-        private Long id;
-        private String name;
-        private Long productId;
-        private BigDecimal thresholdValue;
-        private MeasurementUnit measurementUnit;
-        private Instant createdAt;
-        private Instant updatedAt;
-
-        public Builder id(Long id) { this.id = id; return this; }
-        public Builder name(String name) { this.name = name; return this; }
-        public Builder productId(Long productId) { this.productId = productId; return this; }
-        public Builder thresholdValue(BigDecimal thresholdValue) { this.thresholdValue = thresholdValue; return this; }
-        public Builder measurementUnit(MeasurementUnit measurementUnit) { this.measurementUnit = measurementUnit; return this; }
-        public Builder createdAt(Instant createdAt) { this.createdAt = createdAt; return this; }
-        public Builder updatedAt(Instant updatedAt) { this.updatedAt = updatedAt; return this; }
-
-        public Product build() {
-            return new Product(productId, id, name, thresholdValue, measurementUnit, updatedAt, createdAt);
-        }
     }
 }

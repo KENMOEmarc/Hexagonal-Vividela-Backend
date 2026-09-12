@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
@@ -21,6 +22,8 @@ public class RegisterStockRequest {
     private BigDecimal quantity;
 
     private BigDecimal unitPrice;
+
+    private Instant entryDate;
 
     private LocalDate expirationDate;
 

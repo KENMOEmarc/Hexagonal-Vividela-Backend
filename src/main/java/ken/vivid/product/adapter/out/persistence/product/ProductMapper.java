@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
 public class ProductMapper {
 
     public Product toDomain(ProductJpaEntity entity) {
-        return new Product.Builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .thresholdValue(entity.getThresholdValue())
-                .measurementUnit(entity.getMeasurementUnit())
-                .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
-                .build();
+        return Product.createProduct(
+                entity.getId(),
+                entity.getName(),
+                entity.getThresholdValue(),
+                entity.getMeasurementUnit(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        );
     }
 
     public ProductJpaEntity toEntity(Product product) {

@@ -1,8 +1,8 @@
 package ken.vivid.product.adapter.out.persistence.product;
 
-import ken.vivid.product.application.port.out.product.DeleteProductPort;
-import ken.vivid.product.application.port.out.product.LoadProductPort;
-import ken.vivid.product.application.port.out.product.SaveProductPort;
+import ken.vivid.product.application.port.out.product.DeleteProduct;
+import ken.vivid.product.application.port.out.product.LoadProduct;
+import ken.vivid.product.application.port.out.product.SaveProduct;
 import ken.vivid.product.domain.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class ProductPersistenceAdapter implements LoadProductPort, SaveProductPort, DeleteProductPort {
+public class ProductPersistenceAdapter implements LoadProduct, SaveProduct, DeleteProduct {
 
     private final ProductJpaRepository jpaRepository;
     private final ProductMapper mapper;
@@ -44,7 +44,7 @@ public class ProductPersistenceAdapter implements LoadProductPort, SaveProductPo
     }
 
     @Override
-    public void delete(Long id, Long actingUserId) {
+    public void delete(Long id) {
        jpaRepository.deleteById(id);
     }
 }

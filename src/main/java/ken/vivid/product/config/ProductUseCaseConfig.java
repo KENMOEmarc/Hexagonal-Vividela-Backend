@@ -1,12 +1,12 @@
 package ken.vivid.product.config;
 
-import ken.vivid.product.application.port.out.product.DeleteProductPort;
-import ken.vivid.product.application.port.out.product.LoadProductPort;
-import ken.vivid.product.application.port.out.product.SaveProductPort;
-import ken.vivid.product.application.port.out.product.SaveProductRegistrationPort;
-import ken.vivid.product.application.port.out.stock.LoadStockPort;
-import ken.vivid.product.application.port.out.stock.SaveStockMovementPort;
-import ken.vivid.product.application.port.out.stock.SaveStockPort;
+import ken.vivid.product.application.port.out.product.DeleteProduct;
+import ken.vivid.product.application.port.out.product.LoadProduct;
+import ken.vivid.product.application.port.out.product.SaveProduct;
+import ken.vivid.product.application.port.out.product.SaveProductRegistration;
+import ken.vivid.product.application.port.out.stock.LoadStock;
+import ken.vivid.product.application.port.out.stock.SaveStockMovement;
+import ken.vivid.product.application.port.out.stock.SaveStock;
 import ken.vivid.product.application.service.ProductService;
 import ken.vivid.product.application.service.StockAllocationPolicy;
 import ken.vivid.product.application.service.StockService;
@@ -22,21 +22,21 @@ public class ProductUseCaseConfig {
     }
 
     @Bean
-    public ProductService productService(LoadProductPort loadProductPort,
-                                         SaveProductPort saveProductPort,
-                                         DeleteProductPort deleteProductPort,
-                                         LoadStockPort loadStockPort) {
-        return new ProductService(loadProductPort, saveProductPort, deleteProductPort, loadStockPort);
+    public ProductService productService(LoadProduct loadProduct,
+                                         SaveProduct saveProduct,
+                                         DeleteProduct deleteProduct,
+                                         LoadStock loadStock) {
+        return new ProductService(loadProduct, saveProduct, deleteProduct, loadStock);
     }
 
     @Bean
-    public StockService stockService(LoadProductPort loadProductPort,
-                                     LoadStockPort loadStockPort,
-                                     SaveStockPort saveStockPort,
-                                     SaveProductRegistrationPort saveProductRegistrationPort,
-                                     SaveStockMovementPort saveStockMovementPort,
+    public StockService stockService(LoadProduct loadProduct,
+                                     LoadStock loadStock,
+                                     SaveStock saveStock,
+                                     SaveProductRegistration saveProductRegistration,
+                                     SaveStockMovement saveStockMovement,
                                      StockAllocationPolicy stockAllocationPolicy) {
-        return new StockService(loadProductPort, loadStockPort, saveStockPort,
-                saveProductRegistrationPort, saveStockMovementPort, stockAllocationPolicy);
+        return new StockService(loadProduct, loadStock, saveStock,
+                saveProductRegistration, saveStockMovement, stockAllocationPolicy);
     }
 }

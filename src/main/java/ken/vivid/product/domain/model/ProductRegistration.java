@@ -14,7 +14,7 @@ public class ProductRegistration {
     private String notes;
     private Instant registeredAt;
 
-    public ProductRegistration(Long id, Long productId, Long employeeUserId, BigDecimal quantity, RegistrationType registrationType, String notes, Instant registeredAt) {
+    private ProductRegistration(Long id, Long productId, Long employeeUserId, BigDecimal quantity, RegistrationType registrationType, String notes, Instant registeredAt) {
         this.id = id;
         this.productId = productId;
         this.employeeUserId = employeeUserId;
@@ -24,26 +24,8 @@ public class ProductRegistration {
         this.registeredAt = registeredAt;
     }
 
-    public static class Builder {
-        private Long id;
-        private Long productId;
-        private Long employeeUserId;
-        private BigDecimal quantity;
-        private RegistrationType registrationType;
-        private String notes;
-        private Instant registeredAt;
-
-        public Builder id(Long id) { this.id = id; return this; }
-        public Builder productId(Long productId) { this.productId = productId; return this; }
-        public Builder employeeUserId(Long employeeUserId) { this.employeeUserId = employeeUserId; return this; }
-        public Builder quantity(BigDecimal quantity) { this.quantity = quantity; return this; }
-        public Builder registrationType(RegistrationType registrationType) { this.registrationType = registrationType; return this; }
-        public Builder notes(String notes) { this.notes = notes; return this; }
-        public Builder registeredAt(Instant registeredAt) { this.registeredAt = registeredAt; return this; }
-
-        public ProductRegistration build() {
-            return new ProductRegistration(id, productId, employeeUserId, quantity, registrationType, notes, registeredAt);
-        }
+    public static ProductRegistration createProductRegistration(Long id, Long productId, Long employeeUserId, BigDecimal quantity, RegistrationType registrationType, String notes, Instant registeredAt) {
+        return new ProductRegistration(id, productId, employeeUserId, quantity, registrationType, notes, registeredAt);
     }
 
     public Long getProductId() {

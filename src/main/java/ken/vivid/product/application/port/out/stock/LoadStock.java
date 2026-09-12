@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-public interface LoadStockPort {
+public interface LoadStock {
     Optional<Stock> loadById(Long id);
 
     List<Stock> loadAvailableByProductOrderedByExpiration(Long productId);

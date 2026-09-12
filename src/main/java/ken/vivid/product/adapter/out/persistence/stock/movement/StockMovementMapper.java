@@ -7,15 +7,15 @@ import org.springframework.stereotype.Component;
 public class StockMovementMapper {
 
     public StockMovement toDomain(StockMovementJpaEntity entity) {
-        return new StockMovement.Builder()
-                .id(entity.getId())
-                .stockId(entity.getStockId())
-                .userId(entity.getUserId())
-                .quantity(entity.getQuantity())
-                .movementType(entity.getMovementType())
-                .notes(entity.getNotes())
-                .movementDate(entity.getMovementDate())
-                .build();
+        return StockMovement.createStockMovement(
+                entity.getId(),
+                entity.getStockId(),
+                entity.getUserId(),
+                entity.getQuantity(),
+                entity.getMovementType(),
+                entity.getNotes(),
+                entity.getMovementDate()
+        );
     }
 
     public StockMovementJpaEntity toEntity(StockMovement movement) {

@@ -8,11 +8,8 @@ import ken.vivid.product.adapter.in.web.dto.StockDto;
 import ken.vivid.product.adapter.in.web.payloads.AdjustStockRequest;
 import ken.vivid.product.adapter.in.web.payloads.ConsumeStockRequest;
 import ken.vivid.product.adapter.in.web.payloads.RegisterStockRequest;
-import ken.vivid.product.application.port.in.stock.AdjustStockUseCase;
-import ken.vivid.product.application.port.in.stock.ConsumeStockUseCase;
-import ken.vivid.product.application.port.in.stock.ListStockProductUseCase;
-import ken.vivid.product.application.port.in.stock.RegisterStockEntryUseCase;
-import ken.vivid.product.application.port.out.stock.LoadStockPort;
+import ken.vivid.product.application.port.in.stock.*;
+import ken.vivid.product.application.port.out.stock.LoadStock;
 import ken.vivid.shared.adapter.web.ApiResponse;
 import ken.vivid.shared.domain.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +29,7 @@ public class StockController {
     private final ConsumeStockUseCase consumeStockUseCase;
     private final AdjustStockUseCase adjustStockUseCase;
     private final ListStockProductUseCase listStockProductUseCase;
-    private final LoadStockPort loadStockPort;
+    private final LoadStock loadStock;
     private final GetCurrentUserUseCase getCurrentUserUseCase;
 
     @GetMapping("/low")
@@ -45,7 +42,7 @@ public class StockController {
 
     @GetMapping("/product/{productId}/batches")
     public ResponseEntity<ApiResponse<List<StockDto>>> getBatchesByProduct(@PathVariable Long productId) {
-        List<StockDto> batches = loadStockPort.loadAvailableByProductOrderedByExpiration(productId).stream()
+        List<StockDto> batches = loadStock.loadAvailableByProductOrderedByExpiration(productId).stream()
                 .map(StockDto::from)
                 .toList();
         return ResponseEntity.ok(ApiResponse.success("Stock batches", batches));
@@ -53,7 +50,7 @@ public class StockController {
 
     @GetMapping("/product/{productId}")
     public ResponseEntity<ApiResponse<StockDto>> getStockByProduct(@PathVariable Long productId) {
-        List<StockDto> batches = loadStockPort.loadAvailableByProductOrderedByExpiration(productId).stream()
+        List<StockDto> batches = loadStock.loadAvailableByProductOrderedByExpiration(productId).stream()
                 .map(StockDto::from)
                 .toList();
         StockDto first = batches.stream().findFirst()
@@ -66,11 +63,12 @@ public class StockController {
     public ResponseEntity<ApiResponse<StockDto>> createBatch(@Valid @RequestBody RegisterStockRequest request,
                                                              Authentication authentication) {
         User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
-        StockDto stock = StockDto.from(registerStockEntryUseCase.register(new RegisterStockEntryUseCase.RegisterStockCommand(
+        StockDto stock = StockDto.from(registerStockEntryUseCase.register(new RegisterStockCommand(
                 request.getProductId(),
                 actingUser.getId(),
                 request.getQuantity(),
                 request.getUnitPrice(),
+                request.getEntryDate(),
                 request.getExpirationDate(),
                 request.getRegistrationType(),
                 request.getNotes()
@@ -84,10 +82,10 @@ public class StockController {
                                                              @Valid @RequestBody AdjustStockRequest request,
                                                              Authentication authentication) {
         User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
-        adjustStockUseCase.adjust(new AdjustStockUseCase.AdjustStockCommand(
+        adjustStockUseCase.adjust(new AdjustStockCommand(
                 batchId, actingUser.getId(), request.getNewStockLevel(), request.getNotes()
         ));
-        StockDto updated = loadStockPort.loadById(batchId)
+        StockDto updated = loadStock.loadById(batchId)
                 .map(StockDto::from)
                 .orElseThrow(() -> new ResourceNotFoundException("Stock lot not found : " + batchId));
         return ResponseEntity.ok(ApiResponse.success("Stock batch updated", updated));
@@ -98,7 +96,7 @@ public class StockController {
     public ResponseEntity<ApiResponse<Void>> consume(@Valid @RequestBody ConsumeStockRequest request,
                                                      Authentication authentication) {
         User actingUser = getCurrentUserUseCase.getCurrentUser(authentication.getName());
-        consumeStockUseCase.consume(new ConsumeStockUseCase.ConsumeStockCommand(
+        consumeStockUseCase.consume(new ConsumeStockCommand(
                 request.getProductId(),
                 actingUser.getId(),
                 request.getTreatmentId(),

@@ -7,15 +7,15 @@ import org.springframework.stereotype.Component;
 public class ProductRegistrationMapper {
 
     public ProductRegistration toDomain(ProductRegistrationJpaEntity entity) {
-        return new ProductRegistration.Builder()
-                .id(entity.getId())
-                .productId(entity.getProductId())
-                .employeeUserId(entity.getEmployeeUserId())
-                .quantity(entity.getQuantity())
-                .registrationType(entity.getRegistrationType())
-                .notes(entity.getNotes())
-                .registeredAt(entity.getRegisteredAt())
-                .build();
+        return ProductRegistration.createProductRegistration(
+                entity.getId(),
+                entity.getProductId(),
+                entity.getEmployeeUserId(),
+                entity.getQuantity(),
+                entity.getRegistrationType(),
+                entity.getNotes(),
+                entity.getRegisteredAt()
+        );
     }
 
     public ProductRegistrationJpaEntity toEntity(ProductRegistration registration) {

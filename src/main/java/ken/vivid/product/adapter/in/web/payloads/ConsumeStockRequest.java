@@ -18,7 +18,5 @@ public class ConsumeStockRequest {
     @DecimalMin(value = "0.01", message = "The quantity must be strictly positive")
     private BigDecimal quantity;
 
-    private Long treatmentId;
-
     private String notes;
 }

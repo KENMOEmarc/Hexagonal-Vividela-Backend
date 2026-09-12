@@ -11,15 +11,15 @@ import java.time.ZoneOffset;
 public class StockMapper {
 
     public Stock toDomain(StockJpaEntity entity) {
-        return new Stock.Builder()
-                .id(entity.getId())
-                .productId(entity.getProductId())
-                .quantity(entity.getCurrentQuantity())
-                .unitPrice(entity.getUnitPrice())
-                .entryDate(toInstant(entity.getEntryDate()))
-                .expirationDate(toInstant(entity.getExpirationDate()))
-                .updatedAt(entity.getUpdatedAt())
-                .build();
+        return Stock.createStock(
+                entity.getId(),
+                entity.getProductId(),
+                entity.getCurrentQuantity(),
+                entity.getUpdatedAt(),
+                toInstant(entity.getEntryDate()),
+                entity.getUnitPrice(),
+                toInstant(entity.getExpirationDate())
+        );
     }
 
     public StockJpaEntity toEntity(Stock stock) {

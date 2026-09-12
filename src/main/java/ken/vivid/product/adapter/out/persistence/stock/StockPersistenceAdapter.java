@@ -1,7 +1,7 @@
 package ken.vivid.product.adapter.out.persistence.stock;
 
-import ken.vivid.product.application.port.out.stock.LoadStockPort;
-import ken.vivid.product.application.port.out.stock.SaveStockPort;
+import ken.vivid.product.application.port.out.stock.LoadStock;
+import ken.vivid.product.application.port.out.stock.SaveStock;
 import ken.vivid.product.domain.model.Stock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class StockPersistenceAdapter implements LoadStockPort, SaveStockPort {
+public class StockPersistenceAdapter implements LoadStock, SaveStock {
 
     private final StockJpaRepository jpaRepository;
     private final StockMapper mapper;
