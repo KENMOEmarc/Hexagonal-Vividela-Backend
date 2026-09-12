@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 public class StockMovement {
-    private Long id;
+    private final Long id;
     private final Long stockId;
     private final Long userId;
     private BigDecimal quantity;
@@ -14,7 +14,8 @@ public class StockMovement {
     private String notes;
     private Instant movementDate;
 
-    private StockMovement(Long id, Long stockId, Long userId, BigDecimal quantity, MovementType movementType, String notes, Instant movementDate) {
+    private StockMovement(Long id, Long stockId, Long userId, BigDecimal quantity,
+                          MovementType movementType, String notes, Instant movementDate) {
         this.id = id;
         this.stockId = stockId;
         this.userId = userId;
@@ -24,7 +25,31 @@ public class StockMovement {
         this.movementDate = movementDate;
     }
 
-    public static StockMovement createStockMovement(Long id, Long stockId, Long userId, BigDecimal quantity, MovementType movementType, String notes, Instant movementDate) {
+    public static StockMovement createStockMovement(Long id, Long stockId, Long userId, BigDecimal quantity,
+                                                    MovementType movementType, String notes, Instant movementDate) {
+
+        if (id == null) {
+            throw new IllegalArgumentException("ID cannot be null");
+        }
+        if (stockId == null) {
+            throw new IllegalArgumentException("Stock ID cannot be null");
+        }
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+        if (quantity == null || quantity.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Quantity cannot be null or negative");
+        }
+        if (movementType == null) {
+            throw new IllegalArgumentException("Movement type cannot be null");
+        }
+        if (notes == null || notes.isBlank()) {
+            throw new IllegalArgumentException("Notes cannot be null or blank");
+        }
+        if (movementDate == null || movementDate.isAfter(Instant.now())) {
+            throw new IllegalArgumentException("Movement date cannot be null or in the future");
+        }
+
         return new StockMovement(id, stockId, userId, quantity, movementType, notes, movementDate);
     }
 

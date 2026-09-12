@@ -8,6 +8,7 @@ public class UserMapper {
 
     public User toDomain(UserJpaEntity entity) {
         return User.createUser(
+                entity.getId(),
                 entity.getRole(),
                 entity.getFirstName(),
                 entity.getLastName(),

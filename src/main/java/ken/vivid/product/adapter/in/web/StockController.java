@@ -99,7 +99,6 @@ public class StockController {
         consumeStockUseCase.consume(new ConsumeStockCommand(
                 request.getProductId(),
                 actingUser.getId(),
-                request.getTreatmentId(),
                 request.getQuantity(),
                 request.getNotes()
         ));

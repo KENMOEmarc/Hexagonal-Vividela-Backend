@@ -65,11 +65,10 @@ public class StockService implements RegisterStockEntryUseCase, ConsumeStockUseC
         ProductRegistration registration = ProductRegistration.createProductRegistration(
                 null,
                 product.getId(),
-                command.employeeUserId(),
                 command.quantity(),
                 command.registrationType(),
-                command.notes(),
-                now
+                command.notes() == null || command.notes().isBlank() ? "Stock entry" : command.notes(),
+                command.entryDate()== null ? now : command.entryDate()
         );
         saveProductRegistration.save(registration);
 
@@ -107,9 +106,7 @@ public class StockService implements RegisterStockEntryUseCase, ConsumeStockUseC
         List<StockAllocationPolicy.Allocation> allocations = stockAllocationPolicy.allocate(availableStocks, command.quantity());
 
         Instant now = Instant.now();
-        String notes = command.treatmentId() == null
-                ? command.notes()
-                : appendReference(command.notes(), "treatment #" + command.treatmentId());
+        String notes = appendReference(command.notes(), "Consumption for product " + command.productId());
 
         for (StockAllocationPolicy.Allocation allocation : allocations) {
             Stock lot = allocation.stock();

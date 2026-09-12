@@ -67,6 +67,7 @@ public class AuthService implements LoginUseCase,
         }
 
         User newUser = User.createUser(
+                storeCommand.id(),
                 Role.CUSTOMER,
                 storeCommand.firstName(),
                 storeCommand.lastName(),
@@ -89,6 +90,7 @@ public class AuthService implements LoginUseCase,
         }
 
         User newUser = User.createUser(
+                storeCommand.id(),
                 storeCommand.role(),
                 storeCommand.firstName(),
                 storeCommand.lastName(),

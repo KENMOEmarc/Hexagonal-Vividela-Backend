@@ -10,7 +10,6 @@ public class ProductRegistrationMapper {
         return ProductRegistration.createProductRegistration(
                 entity.getId(),
                 entity.getProductId(),
-                entity.getEmployeeUserId(),
                 entity.getQuantity(),
                 entity.getRegistrationType(),
                 entity.getNotes(),
@@ -22,7 +21,6 @@ public class ProductRegistrationMapper {
         return ProductRegistrationJpaEntity.builder()
                 .id(registration.getId())
                 .productId(registration.getProductId())
-                .employeeUserId(registration.getEmployeeUserId())
                 .quantity(registration.getQuantity())
                 .registrationType(registration.getRegistrationType())
                 .notes(registration.getNotes())

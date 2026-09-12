@@ -45,6 +45,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<LoginResponse>> register(@Valid @RequestBody RegisterRequest request) {
         AuthResult result = registerUseCase.register(new StoreCommand(
+                null,
                 request.getFirstName(),
                 request.getLastName(),
                 request.getUserName(),
@@ -61,6 +62,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<UserDto>> store(@Valid @RequestBody RegisterRequest request,
                                                       Authentication authentication) {
         User user = registerUseCase.store(new StoreCommand(
+                null,
                 request.getFirstName(),
                 request.getLastName(),
                 request.getUserName(),
@@ -88,15 +90,5 @@ public class AuthController {
         } catch (IllegalArgumentException e) {
             throw new InvalidRequestException("Invalid role : " + role);
         }
-    }
-
-    private Role extractRole(Authentication authentication) {
-        return authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .filter(authority -> authority.startsWith(ROLE_PREFIX))
-                .map(authority -> authority.substring(ROLE_PREFIX.length()))
-                .map(Role::valueOf)
-                .findFirst()
-                .orElseThrow(() -> new AccessDeniedException("Role of the current user not found"));
     }
 }

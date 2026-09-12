@@ -12,7 +12,8 @@ public class Stock {
     private Instant expirationDate;
     private Instant updatedAt;
 
-    private Stock(Long id, Long productId, BigDecimal quantity, Instant updatedAt, Instant entryDate, BigDecimal unitPrice, Instant expirationDate) {
+    private Stock(Long id, Long productId, BigDecimal quantity, Instant updatedAt,
+                  Instant entryDate, BigDecimal unitPrice, Instant expirationDate) {
         this.id = id;
         this.productId = productId;
         this.quantity = quantity;
@@ -22,7 +23,36 @@ public class Stock {
         this.expirationDate = expirationDate;
     }
 
-    public static Stock createStock(Long id, Long productId, BigDecimal quantity, Instant updatedAt, Instant entryDate, BigDecimal unitPrice, Instant expirationDate) {
+    public static Stock createStock(Long id, Long productId, BigDecimal quantity, Instant updatedAt,
+                                    Instant entryDate, BigDecimal unitPrice, Instant expirationDate) {
+        if (quantity.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative");
+        }
+
+        if (unitPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Unit price cannot be negative");
+        }
+
+        if (expirationDate.isBefore(entryDate)) {
+            throw new IllegalArgumentException("Expiration date cannot be before entry date");
+        }
+
+        if (updatedAt.isBefore(entryDate)) {
+            throw new IllegalArgumentException("Updated at date cannot be before entry date");
+        }
+
+        if (id == null) {
+            throw new IllegalArgumentException("ID cannot be null");
+        }
+
+        if (productId == null) {
+            throw new IllegalArgumentException("Product ID cannot be null");
+        }
+
+        if (id == null) {
+            throw new IllegalArgumentException("ID cannot be null");
+        }
+
         return new Stock(id, productId, quantity, updatedAt, entryDate, unitPrice, expirationDate);
     }
 

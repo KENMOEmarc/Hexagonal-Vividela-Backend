@@ -7,16 +7,15 @@ import java.time.Instant;
 
 public class Product {
 
-    private final Long productId;
-    private Long id;
+    private final Long id;
     private String name;
     private BigDecimal thresholdValue;
     private MeasurementUnit measurementUnit;
     private Instant createdAt;
     private Instant updatedAt;
 
-    private Product(Long productId, String name, BigDecimal thresholdValue, MeasurementUnit measurementUnit, Instant createdAt, Instant updatedAt) {
-        this.productId = productId;
+    private Product(Long id, String name, BigDecimal thresholdValue, MeasurementUnit measurementUnit, Instant createdAt, Instant updatedAt) {
+        this.id = id;
         this.name = name;
         this.thresholdValue = thresholdValue;
         this.measurementUnit = measurementUnit;
@@ -24,8 +23,26 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
-    public static Product createProduct(Long productId, String name, BigDecimal thresholdValue, MeasurementUnit measurementUnit, Instant createdAt, Instant updatedAt) {
-        return new Product(productId, name, thresholdValue, measurementUnit, createdAt, updatedAt);
+    public static Product createProduct(Long id, String name, BigDecimal thresholdValue, MeasurementUnit measurementUnit, Instant createdAt, Instant updatedAt) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID cannot be null");
+        }
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (thresholdValue == null || thresholdValue.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Threshold value cannot be null or negative");
+        }
+        if (measurementUnit == null) {
+            throw new IllegalArgumentException("Measurement unit cannot be null");
+        }
+        if (createdAt.isAfter(Instant.now())) {
+            throw new IllegalArgumentException("Created at date cannot be in the future");
+        }
+        if (updatedAt.isAfter(Instant.now())) {
+            throw new IllegalArgumentException("Updated at date cannot be in the future");
+        }
+        return new Product(id, name, thresholdValue, measurementUnit, createdAt, updatedAt);
     }
 
     public Long getId() {

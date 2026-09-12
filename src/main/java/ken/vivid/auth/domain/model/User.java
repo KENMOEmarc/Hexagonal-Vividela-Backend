@@ -3,7 +3,7 @@ package ken.vivid.auth.domain.model;
 import ken.vivid.auth.domain.model.enums.Role;
 
 public class User {
-    private Long id;
+    private final Long id;
     private Role role;
     private String firstName;
     private String lastName;
@@ -14,8 +14,9 @@ public class User {
     private Integer loyaltyPoints;
     private Boolean isActive;
 
-    private User(Role role, String firstName, String lastName, String userName,
+    private User(Long id, Role role, String firstName, String lastName, String userName,
                  String phone, String email, String password) {
+        this.id = id;
         this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -26,12 +27,15 @@ public class User {
         this.isActive = true;
     }
 
-    public static User createUser(Role role, String firstName, String lastName,
+    public static User createUser(Long id, Role role, String firstName, String lastName,
                                   String userName, String phone, String email, String password) {
-        if (userName.isBlank() || email.isBlank() || password.isBlank()) {
-            throw new IllegalArgumentException("Username, email, and password cannot be blank");
+
+        if (firstName.isBlank() || lastName.isBlank() || userName.isBlank() ||
+                phone.isBlank() || email.isBlank() || password.isBlank() || role.describeConstable().isEmpty()) {
+            throw new IllegalArgumentException("First name, last name, username, email, password, and role cannot be blank");
         }
-       return new User(role, firstName, lastName, userName, phone, email, password);
+
+       return new User(id, role, firstName, lastName, userName, phone, email, password);
     }
 
     public Long getId() {
