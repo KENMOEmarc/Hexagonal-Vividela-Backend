@@ -13,7 +13,7 @@ import ken.vivid.auth.application.port.in.saveUser.StoreCommand;
 import ken.vivid.auth.domain.model.AuthResult;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.auth.domain.model.enums.Role;
-import ken.vivid.auth.config.ApiResponse;
+import ken.vivid.auth.adapter.config.ApiResponse;
 import ken.vivid.exception.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

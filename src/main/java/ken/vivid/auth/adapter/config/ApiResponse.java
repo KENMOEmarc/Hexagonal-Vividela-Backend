@@ -1,4 +1,4 @@
-package ken.vivid.auth.config;
+package ken.vivid.auth.adapter.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

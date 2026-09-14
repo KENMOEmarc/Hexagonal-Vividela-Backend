@@ -10,7 +10,7 @@ import ken.vivid.product.adapter.in.web.payloads.ConsumeStockRequest;
 import ken.vivid.product.adapter.in.web.payloads.RegisterStockRequest;
 import ken.vivid.product.application.port.in.stock.*;
 import ken.vivid.product.application.port.out.stock.LoadStock;
-import ken.vivid.auth.config.ApiResponse;
+import ken.vivid.auth.adapter.config.ApiResponse;
 import ken.vivid.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package ken.vivid.auth.config;
+package ken.vivid.auth.adapter.config;
 
 import ken.vivid.auth.application.port.out.*;
 import ken.vivid.auth.application.service.AuthService;

@@ -1,4 +1,4 @@
-package ken.vivid.auth.config;
+package ken.vivid.auth.adapter.config;
 
 import ken.vivid.auth.adapter.exception.InvalidCredentialsException;
 import ken.vivid.exception.*;

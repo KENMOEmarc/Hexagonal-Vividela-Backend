@@ -7,7 +7,7 @@ import ken.vivid.product.adapter.in.web.payloads.UpdateProductRequest;
 import ken.vivid.product.application.port.in.product.*;
 import ken.vivid.auth.application.port.in.GetCurrentUserUseCase;
 import ken.vivid.auth.domain.model.User;
-import ken.vivid.auth.config.ApiResponse;
+import ken.vivid.auth.adapter.config.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
