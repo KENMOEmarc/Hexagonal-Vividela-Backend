@@ -1,4 +1,4 @@
-package ken.vivid.shared.domain.exception;
+package ken.vivid.exception;
 
 public class ResourceNotFoundException extends DomainException {
     public ResourceNotFoundException(String message) {

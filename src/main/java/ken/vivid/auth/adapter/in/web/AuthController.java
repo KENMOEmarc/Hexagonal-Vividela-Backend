@@ -13,14 +13,12 @@ import ken.vivid.auth.application.port.in.saveUser.StoreCommand;
 import ken.vivid.auth.domain.model.AuthResult;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.auth.domain.model.enums.Role;
-import ken.vivid.shared.adapter.web.ApiResponse;
-import ken.vivid.shared.domain.exception.InvalidRequestException;
+import ken.vivid.auth.config.ApiResponse;
+import ken.vivid.exception.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

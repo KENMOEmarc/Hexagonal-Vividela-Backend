@@ -1,6 +1,6 @@
-package ken.vivid.auth.domain.exception;
+package ken.vivid.auth.adapter.exception;
 
-import ken.vivid.shared.domain.exception.DomainException;
+import ken.vivid.exception.DomainException;
 
 public class InvalidCredentialsException extends DomainException {
     public InvalidCredentialsException(String message) {

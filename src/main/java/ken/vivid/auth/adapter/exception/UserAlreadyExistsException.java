@@ -1,6 +1,6 @@
-package ken.vivid.auth.domain.exception;
+package ken.vivid.auth.adapter.exception;
 
-import ken.vivid.shared.domain.exception.DuplicateResourceException;
+import ken.vivid.exception.DuplicateResourceException;
 
 public class UserAlreadyExistsException extends DuplicateResourceException {
     public UserAlreadyExistsException(String message) {

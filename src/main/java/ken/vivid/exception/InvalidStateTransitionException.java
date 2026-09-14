@@ -1,4 +1,4 @@
-package ken.vivid.shared.domain.exception;
+package ken.vivid.exception;
 
 public class InvalidStateTransitionException extends DomainException {
     public InvalidStateTransitionException(String message) {

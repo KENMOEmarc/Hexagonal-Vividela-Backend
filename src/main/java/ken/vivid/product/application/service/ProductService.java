@@ -7,8 +7,8 @@ import ken.vivid.product.application.port.out.product.LoadProduct;
 import ken.vivid.product.application.port.out.product.SaveProduct;
 import ken.vivid.product.application.port.out.stock.LoadStock;
 import ken.vivid.product.domain.model.Product;
-import ken.vivid.shared.domain.exception.DuplicateResourceException;
-import ken.vivid.shared.domain.exception.ResourceNotFoundException;
+import ken.vivid.exception.DuplicateResourceException;
+import ken.vivid.exception.ResourceNotFoundException;
 
 import java.math.BigDecimal;
 import java.time.Instant;

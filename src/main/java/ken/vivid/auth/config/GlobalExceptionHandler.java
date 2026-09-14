@@ -1,7 +1,7 @@
-package ken.vivid.shared.adapter.web;
+package ken.vivid.auth.config;
 
-import ken.vivid.auth.domain.exception.InvalidCredentialsException;
-import ken.vivid.shared.domain.exception.*;
+import ken.vivid.auth.adapter.exception.InvalidCredentialsException;
+import ken.vivid.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;

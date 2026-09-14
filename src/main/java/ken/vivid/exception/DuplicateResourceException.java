@@ -1,4 +1,4 @@
-package ken.vivid.shared.domain.exception;
+package ken.vivid.exception;
 
 public class DuplicateResourceException extends DomainException {
     public DuplicateResourceException(String message) {

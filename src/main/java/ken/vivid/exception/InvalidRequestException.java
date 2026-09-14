@@ -1,4 +1,4 @@
-package ken.vivid.shared.domain.exception;
+package ken.vivid.exception;
 
 public class InvalidRequestException extends DomainException {
     public InvalidRequestException(String message) {

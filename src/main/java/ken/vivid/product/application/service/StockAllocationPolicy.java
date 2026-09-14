@@ -1,11 +1,10 @@
 package ken.vivid.product.application.service;
 
-import ken.vivid.product.domain.exception.InsufficientStockException;
+import ken.vivid.product.adapter.exception.InsufficientStockException;
 import ken.vivid.product.domain.model.Stock;
-import ken.vivid.shared.domain.exception.InvalidRequestException;
+import ken.vivid.exception.InvalidRequestException;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

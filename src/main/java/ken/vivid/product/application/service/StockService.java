@@ -7,14 +7,14 @@ import ken.vivid.product.application.port.out.product.SaveProductRegistration;
 import ken.vivid.product.application.port.out.stock.LoadStock;
 import ken.vivid.product.application.port.out.stock.SaveStockMovement;
 import ken.vivid.product.application.port.out.stock.SaveStock;
-import ken.vivid.product.domain.exception.InsufficientStockException;
+import ken.vivid.product.adapter.exception.InsufficientStockException;
 import ken.vivid.product.domain.model.Product;
 import ken.vivid.product.domain.model.ProductRegistration;
 import ken.vivid.product.domain.model.Stock;
 import ken.vivid.product.domain.model.StockMovement;
 import ken.vivid.product.domain.model.enums.MovementType;
-import ken.vivid.shared.domain.exception.InvalidRequestException;
-import ken.vivid.shared.domain.exception.ResourceNotFoundException;
+import ken.vivid.exception.InvalidRequestException;
+import ken.vivid.exception.ResourceNotFoundException;
 
 import java.math.BigDecimal;
 import java.time.Instant;

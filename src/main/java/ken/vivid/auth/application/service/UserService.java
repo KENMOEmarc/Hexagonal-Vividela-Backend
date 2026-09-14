@@ -6,14 +6,13 @@ import ken.vivid.auth.application.port.in.deleteUser.DeleteUserUseCase;
 import ken.vivid.auth.application.port.in.updateUser.UpdateCommand;
 import ken.vivid.auth.application.port.in.updateUser.UpdateUserUseCase;
 import ken.vivid.auth.application.port.out.*;
-import ken.vivid.auth.domain.exception.InvalidCredentialsException;
-import ken.vivid.auth.domain.exception.PasswordMismatchException;
-import ken.vivid.auth.domain.exception.UserAlreadyExistsException;
+import ken.vivid.auth.adapter.exception.InvalidCredentialsException;
+import ken.vivid.auth.adapter.exception.PasswordMismatchException;
+import ken.vivid.auth.adapter.exception.UserAlreadyExistsException;
 import ken.vivid.auth.domain.model.User;
 import ken.vivid.auth.domain.model.enums.Role;
-import ken.vivid.shared.domain.exception.InvalidRequestException;
-import ken.vivid.shared.domain.exception.ResourceNotFoundException;
-import org.springframework.security.access.AccessDeniedException;
+import ken.vivid.exception.InvalidRequestException;
+import ken.vivid.exception.ResourceNotFoundException;
 
 public class UserService implements UpdateUserUseCase,
         DeleteUserUseCase, ChangePasswordUseCase {

@@ -1,4 +1,4 @@
-package ken.vivid.shared.domain.exception;
+package ken.vivid.exception;
 
 public abstract class DomainException extends RuntimeException {
     protected DomainException(String message){
@@ -7,5 +7,4 @@ public abstract class DomainException extends RuntimeException {
     protected DomainException(String message, Throwable cause){
         super(message, cause);
     }
-
 }

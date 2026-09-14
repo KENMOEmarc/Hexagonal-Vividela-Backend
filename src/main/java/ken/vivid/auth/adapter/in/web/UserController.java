@@ -11,7 +11,7 @@ import ken.vivid.auth.application.port.in.GetCurrentUserUseCase;
 import ken.vivid.auth.application.port.in.updateUser.UpdateCommand;
 import ken.vivid.auth.application.port.in.updateUser.UpdateUserUseCase;
 import ken.vivid.auth.domain.model.User;
-import ken.vivid.shared.adapter.web.ApiResponse;
+import ken.vivid.auth.config.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
