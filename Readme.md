@@ -1,12 +1,19 @@
 # 🧺 Vividela Backend — Modular Hexagonal Architecture
 
-![Java](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.10-6DB33F?logo=springboot&logoColor=white)
-![Spring Security](https://img.shields.io/badge/Spring%20Security-JWT-6DB33F?logo=springsecurity&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
-![Maven](https://img.shields.io/badge/Maven-3.9%2B-C71A36?logo=apachemaven&logoColor=white)
-![Architecture](https://img.shields.io/badge/Architecture-Hexagonal%20%7C%20Modular-blueviolet)
-![License](https://img.shields.io/badge/License-Private-lightgrey)
+![Java 21](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white)
+![Spring Boot 3.5.10](https://img.shields.io/badge/Spring%20Boot-3.5.10-6DB33F?logo=springboot&logoColor=white)
+![Spring Security JWT](https://img.shields.io/badge/Spring%20Security-JWT-6DB33F?logo=springsecurity&logoColor=white)
+![MySQL 8.0](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
+![Maven 3.9+](https://img.shields.io/badge/Maven-3.9%2B-C71A36?logo=apachemaven&logoColor=white)
+![Architecture Hexagonal](https://img.shields.io/badge/Architecture-Hexagonal%20%7C%20Modular-blueviolet)
+![BCrypt](https://img.shields.io/badge/Password%20Hash-BCrypt-00A3E0)
+![JWT](https://img.shields.io/badge/Auth-JWT-000000)
+![Docker Compose](https://img.shields.io/badge/Infra-Docker%20Compose-2496ED?logo=docker&logoColor=white)
+![License Private](https://img.shields.io/badge/License-Private-lightgrey)
+![Status Active](https://img.shields.io/badge/Status-Active-success)
+![API REST](https://img.shields.io/badge/API-REST%20%2F%20JSON-FF6F61)
+![GitHub Repo](https://img.shields.io/badge/GitHub-KENMOEmarc%2FHexagonal--Vividela--Backend-181717?logo=github)
+![GitHub Stars](https://img.shields.io/github/stars/KENMOEmarc/Hexagonal-Vividela-Backend?style=flat-square&logo=github)
 
 **Spring Boot** backend for inventory management (products, stock batches, movements) with **JWT** authentication, split into **autonomous business modules** (`auth`, `product`, `shared`), each following **hexagonal architecture (ports & adapters)**. This version is the "package-by-feature" evolution of the simple hexagonal template: each module contains its own `domain`, `application`, `adapter`, and `config`. 🧩
 
@@ -15,7 +22,7 @@
 | Layer | Technology | Version | Role |
 |--------|-------------|---------|------|
 | ⚙️ Backend | Spring Boot | 3.5.10 | REST server, auto-configuration |
-| 🔐 Security | Spring Security + JWT (JJWT) | 0.12.6 | Stateless authentication, roles |
+| 🔐 Security | Spring Security + JWT ) | 0.12.6 | Stateless authentication, roles |
 | 🗃️ ORM | Spring Data JPA / Hibernate | — | Object-relational mapping |
 | 🐬 Database | MySQL | 8.0 | Persistence (users, products, stock) |
 | 🔑 Password hashing | BCrypt | strength 10 | Password protection |
